@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
   FaPlus,
@@ -7,60 +6,46 @@ import {
   FaTrash,
   FaTimes,
 } from "react-icons/fa";
-
 import Header from "../../../components/Admin/Header";
 import Sidebar from "../../../components/Admin/Sidebar";
 import { supabase } from "../../../lib/supabase";
-
 type Soal = {
   id: number;
   pertanyaan: string;
   opsi: string[];
   jawabanBenar: number;
 };
-
 const letters = ["A", "B", "C", "D"];
-
 export default function SoalPage() {
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
-
   const userEmail = "admin@gmail.com";
-
   const [loading, setLoading] =
     useState(true);
-
   const [saving, setSaving] =
     useState(false);
-
   const [soal, setSoal] =
     useState<Soal[]>([]);
-
   const [isModalOpen, setIsModalOpen] =
     useState(false);
-
   const emptyForm: Soal = {
     id: 0,
     pertanyaan: "",
     opsi: ["", "", "", ""],
     jawabanBenar: 0,
   };
-
   const [formData, setFormData] =
     useState(emptyForm);
       const getSoal = async () => {
     try {
       setLoading(true);
-
       const { data, error } = await supabase
         .from("soal")
         .select("*")
         .order("id", {
           ascending: true,
         });
-
       if (error) throw error;
-
       const hasil: Soal[] = data.map((item) => ({
         id: item.id,
         pertanyaan: item.pertanyaan,
@@ -72,7 +57,6 @@ export default function SoalPage() {
         ],
         jawabanBenar: item.jawaban,
       }));
-
       setSoal(hasil);
     } catch (err) {
       console.error(err);
@@ -81,28 +65,20 @@ export default function SoalPage() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getSoal();
   }, []);
-
   const openTambah = () => {
     setFormData(emptyForm);
     setIsModalOpen(true);
   };
-
   const openEdit = (item: Soal) => {
     setFormData(item);
         setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  // ==========================
-  // INPUT
-  // ==========================
   const handlePertanyaanChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -111,21 +87,17 @@ export default function SoalPage() {
       pertanyaan: e.target.value,
     });
   };
-
   const handleOpsiChange = (
     index: number,
     value: string
   ) => {
     const newOpsi = [...formData.opsi];
-
     newOpsi[index] = value;
-
     setFormData({
       ...formData,
       opsi: newOpsi,
     });
   };
-
   const handleJawabanBenarChange = (
     index: number
   ) => {
@@ -134,15 +106,10 @@ export default function SoalPage() {
       jawabanBenar: index,
     });
   };
-
-  // ==========================
-  // SIMPAN
-  // ==========================
   const handleSubmit = async (
     e: React.FormEvent
   ) => {
     e.preventDefault();
-
     try {
       setSaving(true);
             if (
@@ -154,7 +121,6 @@ export default function SoalPage() {
         alert("Semua field wajib diisi.");
         return;
       }
-
       if (formData.id === 0) {
         const { error } = await supabase
           .from("soal")
@@ -166,7 +132,6 @@ export default function SoalPage() {
             opsi_d: formData.opsi[3],
             jawaban: formData.jawabanBenar,
           });
-
         if (error) throw error;
       } else {
         const { error } = await supabase
@@ -180,14 +145,10 @@ export default function SoalPage() {
             jawaban: formData.jawabanBenar,
           })
           .eq("id", formData.id);
-
         if (error) throw error;
       }
-
       await getSoal();
-
       setFormData(emptyForm);
-
       closeModal();
           } catch (err) {
       console.error(err);
@@ -196,23 +157,15 @@ export default function SoalPage() {
       setSaving(false);
     }
   };
-
-  // ==========================
-  // HAPUS
-  // ==========================
   const handleDelete = async (id: number) => {
     if (!confirm("Hapus soal ini?")) return;
-
     try {
       setLoading(true);
-
       const { error } = await supabase
         .from("soal")
         .delete()
         .eq("id", id);
-
       if (error) throw error;
-
       await getSoal();
     } catch (err) {
       console.error(err);
@@ -221,48 +174,30 @@ export default function SoalPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <Sidebar
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-
       <main className="md:ml-64 flex flex-col min-h-screen">
         <Header
           userEmail={userEmail}
           setIsSidebarOpen={setIsSidebarOpen}
         />
-
         <div className="p-4 md:p-8 text-black text-sm">
                   <div className="bg-white rounded-xl shadow">
             <div className="flex justify-between items-center p-6">
               <h2 className="text-base font-bold">
                 Daftar Soal Quiz
               </h2>
-
               <button
                 onClick={openTambah}
-                className="
-                  bg-blue-600
-                  hover:bg-blue-700
-                  text-white
-                  px-3 py-2
-                  md:px-5 md:py-2
-                  rounded-lg
-                  flex
-                  items-center
-                  gap-2
-                  text-xs
-                  md:text-sm
-                "
-              >
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 md:px-5 md:py-2 rounded-lg flex items-center gap-2 text-xs md:text-sm">
                 <FaPlus />
                 Tambah Soal
               </button>
             </div>
-
             <div className="overflow-x-auto">
               <table className="min-w-[750px] w-full text-xs border-collapse">
                 <thead className="bg-gray-50">
@@ -270,25 +205,20 @@ export default function SoalPage() {
                     <th className="p-4 text-left font-semibold w-10">
                       No
                     </th>
-
                     <th className="p-4 text-left font-semibold">
                       Pertanyaan
                     </th>
-
                     <th className="p-4 text-left font-semibold">
                       Opsi Jawaban
                     </th>
-
                     <th className="p-4 text-left font-semibold">
                       Jawaban Benar
                     </th>
-
                     <th className="p-4 text-center font-semibold w-32">
                       Aksi
                     </th>
                   </tr>
                 </thead>
-
                 <tbody>
                                     {loading ? (
                     <tr>
@@ -298,7 +228,6 @@ export default function SoalPage() {
                       >
                         <div className="flex flex-col items-center justify-center gap-3">
                           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-
                           <span className="text-gray-500 text-sm">
                             Memuat data...
                           </span>
@@ -323,13 +252,11 @@ export default function SoalPage() {
                         <td className="p-4 font-semibold">
                           {index + 1}
                         </td>
-
                         <td className="p-4 max-w-sm">
                           <p className="line-clamp-3">
                             {item.pertanyaan}
                           </p>
                         </td>
-
                         <td className="p-4 text-gray-600">
                           <ul className="space-y-1">
                                                         {item.opsi.map((opsi, idx) => (
@@ -342,52 +269,23 @@ export default function SoalPage() {
                             ))}
                           </ul>
                         </td>
-
                         <td className="p-4">
                           <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-700 font-semibold">
                             {letters[item.jawabanBenar]}
                           </span>
                         </td>
-
                         <td className="p-4">
                           <div className="flex justify-center gap-2">
                             <button
                               onClick={() => openEdit(item)}
                               disabled={loading}
-                              className="
-                                w-8 h-8
-                                md:w-9 md:h-9
-                                rounded-lg
-                                bg-blue-50
-                                hover:bg-blue-100
-                                text-blue-600
-                                flex
-                                items-center
-                                justify-center
-                                disabled:opacity-50
-                                disabled:cursor-not-allowed
-                              "
-                            >
+                              className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                               <FaEdit size={13} />
                             </button>
-
                             <button
                               onClick={() => handleDelete(item.id)}
                               disabled={loading}
-                              className="
-                                w-8 h-8
-                                md:w-9 md:h-9
-                                rounded-lg
-                                                                bg-red-50
-                                hover:bg-red-100
-                                text-red-600
-                                flex
-                                items-center
-                                justify-center
-                                disabled:opacity-50
-                                disabled:cursor-not-allowed
-                              "
-                            >
+                              className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
                               <FaTrash size={13} />
                             </button>
                           </div>
@@ -399,7 +297,6 @@ export default function SoalPage() {
               </table>
             </div>
           </div>
-
           {/* MODAL */}
           {isModalOpen && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm p-4">
@@ -410,7 +307,6 @@ export default function SoalPage() {
                       ? "Tambah Soal"
                       : "Edit Soal"}
                   </h2>
-
                   <button
                     onClick={closeModal}
                     className="text-gray-500 hover:text-black"
@@ -418,7 +314,6 @@ export default function SoalPage() {
                     <FaTimes />
                   </button>
                 </div>
-
                 <form
                   onSubmit={handleSubmit}
                   className="p-5 space-y-4 overflow-y-auto"
@@ -428,7 +323,6 @@ export default function SoalPage() {
                     <label className="block mb-2 text-sm font-medium">
                       Pertanyaan
                     </label>
-
                     <textarea
                       value={formData.pertanyaan}
                       onChange={handlePertanyaanChange}
@@ -437,13 +331,11 @@ export default function SoalPage() {
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
-
                   {/* Opsi Jawaban */}
                   <div>
                     <label className="block mb-2 text-sm font-medium">
                       Opsi Jawaban
                     </label>
-
                     <div className="space-y-2.5">
                       {formData.opsi.map((opsi, idx) => (
                         <div
@@ -469,7 +361,7 @@ export default function SoalPage() {
                           >
                             {letters[idx]}
                           </button>
-                                                    <input
+                            <input
                             type="text"
                             value={opsi}
                             onChange={(e) =>
@@ -482,38 +374,24 @@ export default function SoalPage() {
                         </div>
                       ))}
                     </div>
-
                     <p className="text-[11px] text-gray-500 mt-2">
                       Klik huruf di samping opsi untuk menandai
                       jawaban yang benar.
                     </p>
                   </div>
-
                   {/* Tombol */}
                   <div className="flex justify-end gap-3 pt-2">
                     <button
                       type="button"
                       onClick={closeModal}
                       disabled={saving}
-                      className="
-                        px-5 py-2
-                        rounded-lg
-                        bg-gray-200
-                        hover:bg-gray-300
-                        disabled:opacity-50
-                      "
-                    >
+                      className="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
                       Batal
                     </button>
-
                     <button
                       type="submit"
                       disabled={saving}
-                      className={`
-                        px-5 py-2
-                        rounded-lg
-                        text-white
-                        transition
+                      className={`px-5 py-2 rounded-lg text-white transition
                         ${
                           saving
                             ? "bg-blue-400 cursor-not-allowed"
@@ -536,14 +414,12 @@ export default function SoalPage() {
                               strokeWidth="4"
                               className="opacity-25"
                             />
-
                             <path
                               fill="currentColor"
                               className="opacity-75"
                               d="M4 12a8 8 0 018-8V4l3 3-3 3V8a6 6 0 00-6 6H4z"
                             />
                           </svg>
-
                           Menyimpan...
                         </span>
                       ) : (
