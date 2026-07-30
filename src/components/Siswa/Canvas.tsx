@@ -165,7 +165,7 @@ export default function Canvas({
     if (isCorrect) {
       toast.success(`${item.name} berhasil dipasang`);
     } else {
-      toast.error(`${item.name} dipasang pada slot yang salah`);
+      toast.error(`${item.name} dipasang pada tempat yang salah`);
     }
   };
 
@@ -271,7 +271,7 @@ export default function Canvas({
     if (isCorrect) {
       toast.success(`${item.name} berhasil dipasang`);
     } else {
-      toast.error(`${item.name} dipasang pada slot yang salah`);
+      toast.error(`${item.name} dipasang pada tempat yang salah`);
     }
   };
 

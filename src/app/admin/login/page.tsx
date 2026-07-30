@@ -25,16 +25,16 @@ export default function AdminLogin() {
     }
   };
   return (
-    <div className="min-h-screen bg-blue-600 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#3B82F6] flex items-center justify-center px-4">
       {/* Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="bg-blue-700 py-5 px-6 text-center">
+        <div className="bg-[#1E3A5F] py-5 px-6 text-center">
           <div className="flex justify-center mb-3">
             <img
-              src="https://ui-avatars.com/api/?name=Admin&background=ffffff&color=2563eb&size=128"
+              src="https://api.dicebear.com/9.x/adventurer/svg?seed=Admin"
               alt="Admin"
-              className="w-16 h-16 rounded-full border-4 border-white shadow-lg"
+              className="w-16 h-16 rounded-full border-2 border-white shadow-lg"
             />
           </div>
 <h2 className="text-lg font-bold text-white">
@@ -68,7 +68,7 @@ export default function AdminLogin() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-400 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-400 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
                 />
               </div>
             </div>
@@ -85,12 +85,12 @@ export default function AdminLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-400 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-400 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#3B82F6]"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -100,7 +100,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-70"
+              className="w-full bg-[#1E3A5F] hover:bg-[#3B82F6] text-white py-3 rounded-lg font-semibold transition disabled:opacity-70"
             >
               {isLoading ? "Memproses..." : "Masuk"}
             </button>

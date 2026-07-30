@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   FaBook,
   FaDesktop,
-  FaTimesCircle,
+  FaClipboardCheck,
   FaTimes,
 } from "react-icons/fa";
 
@@ -33,18 +33,18 @@ export default function Sidebar({
 
       {/* ================= MOBILE SIDEBAR ================= */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-64 bg-blue-900 text-white z-50 md:hidden flex flex-col transition-transform duration-300 ${
+        className={`fixed top-0 left-0 bottom-0 w-64 bg-[#1E3A5F] text-white z-50 md:hidden flex flex-col transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-blue-700 flex justify-between items-center">
+        <div className="p-6 border-b border-[#2C4F73] flex justify-between items-center">
           <div>
             <Link href="/" className="text-2xl font-bold">
               E Learning
             </Link>
 
-            <p className="text-xs text-blue-300 mt-1">
+            <p className="text-xs text-blue-200 mt-1">
               Perakitan Komputer
             </p>
           </div>
@@ -65,8 +65,8 @@ export default function Sidebar({
             onClick={() => setIsSidebarOpen(false)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition ${
               pathname === "/"
-                ? "bg-blue-600 text-white"
-                : "hover:bg-blue-800 text-gray-300"
+                ? "bg-[#3B82F6] text-white"
+                : "hover:bg-[#29476A] text-gray-300"
             }`}
           >
             <FaBook />
@@ -79,8 +79,8 @@ export default function Sidebar({
             onClick={() => setIsSidebarOpen(false)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition ${
               pathname === "/simulasi"
-                ? "bg-blue-600 text-white"
-                : "hover:bg-blue-800 text-gray-300"
+                ? "bg-[#3B82F6] text-white"
+                : "hover:bg-[#29476A] text-gray-300"
             }`}
           >
             <FaDesktop />
@@ -93,11 +93,11 @@ export default function Sidebar({
             onClick={() => setIsSidebarOpen(false)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition ${
               pathname === "/quiz"
-                ? "bg-blue-600 text-white"
-                : "hover:bg-blue-800 text-gray-300"
+                ? "bg-[#3B82F6] text-white"
+                : "hover:bg-[#29476A] text-gray-300"
             }`}
           >
-            <FaTimesCircle />
+            <FaClipboardCheck />
             Quiz
           </Link>
         </nav>
@@ -105,14 +105,14 @@ export default function Sidebar({
 
       {/* ================= DESKTOP SIDEBAR ================= */}
 {/* ================= DESKTOP SIDEBAR ================= */}
-<aside className="hidden md:flex fixed top-0 left-0 h-screen w-20 hover:w-64 bg-blue-900 text-white flex-col overflow-hidden transition-all duration-300 ease-in-out group z-40">
+<aside className="hidden md:flex fixed top-0 left-0 h-screen w-20 hover:w-64 bg-[#1E3A5F] text-white flex-col overflow-hidden transition-all duration-300 ease-in-out group z-40">
 
   {/* Logo */}
 <div
   className="
     p-6
     border-b
-    border-blue-700
+    border-[#2C4F73]
     flex
     flex-col
     items-center
@@ -166,7 +166,7 @@ export default function Sidebar({
         group-hover:left-0
         group-hover:translate-x-0
         text-xs
-        text-blue-300
+        text-blue-200
         whitespace-nowrap
         opacity-100
         transition-all
@@ -183,7 +183,7 @@ export default function Sidebar({
         absolute
         left-0
         text-xs
-        text-blue-300
+        text-blue-200
         whitespace-nowrap
         opacity-0
         transition-all
@@ -209,8 +209,8 @@ export default function Sidebar({
       py-3 rounded-lg text-sm font-bold
       transition-all duration-300 ${
         pathname === "/"
-          ? "bg-blue-600 text-white"
-          : "hover:bg-blue-800 text-gray-300"
+          ? "bg-[#3B82F6] text-white"
+          : "hover:bg-[#29476A] text-gray-300"
       }`}
     >
       <FaBook className="min-w-[20px]" />
@@ -241,8 +241,8 @@ export default function Sidebar({
       py-3 rounded-lg text-sm font-bold
       transition-all duration-300 ${
         pathname === "/simulasi"
-          ? "bg-blue-600 text-white"
-          : "hover:bg-blue-800 text-gray-300"
+          ? "bg-[#3B82F6] text-white"
+          : "hover:bg-[#29476A] text-gray-300"
       }`}
     >
       <FaDesktop className="min-w-[20px]" />
@@ -273,11 +273,11 @@ export default function Sidebar({
       py-3 rounded-lg text-sm font-bold
       transition-all duration-300 ${
         pathname === "/quiz"
-          ? "bg-blue-600 text-white"
-          : "hover:bg-blue-800 text-gray-300"
+          ? "bg-[#3B82F6] text-white"
+          : "hover:bg-[#29476A] text-gray-300"
       }`}
     >
-      <FaTimesCircle className="min-w-[20px]" />
+      <FaClipboardCheck className="min-w-[20px]" />
 
       <span
         className="

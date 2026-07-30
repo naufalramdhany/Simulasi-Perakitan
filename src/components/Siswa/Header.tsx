@@ -39,15 +39,6 @@ export default function Header({
           {title}
         </h2>
       </div>
-
-      {/* Right */}
-      <div className="flex items-center gap-2 md:gap-4">
-        <div className="hidden sm:block text-left">
-          <p className="text-xs md:text-sm font-bold text-gray-800">
-            Apa Ya
-          </p>
-        </div>
-      </div>
     </header>
   );
 }
