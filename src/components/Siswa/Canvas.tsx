@@ -146,19 +146,22 @@ export default function Canvas({
 
     saveHistory();
 
-    setComponents((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? {
-              ...c,
-              slotId: slot.id,
-              x: slot.x + slot.width / 2 - c.width / 2,
-              y: slot.y + slot.height / 2 - c.height / 2,
-              isCorrect,
-            }
-          : c
-      )
-    );
+setComponents((prev) =>
+  prev.map((c) =>
+    c.id === id
+      ? {
+          ...c,
+          slotId: slot.id,
+          // 🔽 ukuran & posisi mengikuti slot persis, bukan ukuran asli komponen
+          x: slot.x,
+          y: slot.y,
+          width: slot.width,
+          height: slot.height,
+          isCorrect,
+        }
+      : c
+  )
+);
 
     toast.dismiss();
 
@@ -186,94 +189,98 @@ export default function Canvas({
     setActiveSlotId(nearest ? nearest.id : null);
   };
 
-  const handleRepositionStop = (
-    item: ComputerComponent,
-    d: { x: number; y: number }
-  ) => {
-    setActiveSlotId(null);
+const handleRepositionStop = (
+  item: ComputerComponent,
+  d: { x: number; y: number }
+) => {
+  setActiveSlotId(null);
 
-    const outOfBounds =
-      d.x < -50 ||
-      d.y < -50 ||
-      d.x > 900 ||
-      d.y > 650;
+  const outOfBounds =
+    d.x < -50 ||
+    d.y < -50 ||
+    d.x > 900 ||
+    d.y > 650;
 
-    if (outOfBounds) {
-      // Sengaja diseret keluar board -> lepas ke panel.
-      setComponents((prev) =>
-        prev.map((c) =>
-          c.id === item.id
-            ? {
-                ...c,
-                slotId: null,
-                isCorrect: undefined,
-                x: 0,
-                y: 0,
-              }
-            : c
-        )
-      );
-
-      return;
-    }
-
-    // Slot yang sudah ditempati komponen LAIN (bukan diri sendiri)
-    const currentOccupied = components
-      .filter((c) => c.id !== item.id && c.slotId !== null)
-      .map((c) => c.slotId as string);
-
-    const slot = findNearestSlot(
-      d.x + item.width / 2,
-      d.y + item.height / 2,
-      item.type,
-      currentOccupied
-    );
-
-    if (!slot) {
-      // Tidak ada slot kosong di dekat titik drop -> batalkan
-      // pemindahan, kembalikan ke posisi & slot SEMULA (bukan
-      // dilepas ke panel).
-      setComponents((prev) =>
-        prev.map((c) =>
-          c.id === item.id
-            ? {
-                ...c,
-                x: item.x,
-                y: item.y,
-                slotId: item.slotId,
-                isCorrect: item.isCorrect,
-              }
-            : c
-        )
-      );
-
-      return;
-    }
-
-    const isCorrect = slot.type === item.type;
-
+  if (outOfBounds) {
     setComponents((prev) =>
       prev.map((c) =>
         c.id === item.id
           ? {
               ...c,
-              slotId: slot.id,
-              x: slot.x + slot.width / 2 - c.width / 2,
-              y: slot.y + slot.height / 2 - c.height / 2,
-              isCorrect,
+              slotId: null,
+              isCorrect: undefined,
+              x: 0,
+              y: 0,
+              width: c.originalWidth,
+              height: c.originalHeight,
             }
           : c
       )
     );
 
-    toast.dismiss();
+    return;
+  }
 
-    if (isCorrect) {
-      toast.success(`${item.name} berhasil dipasang`);
-    } else {
-      toast.error(`${item.name} dipasang pada tempat yang salah`);
-    }
-  };
+  // Slot yang sudah ditempati komponen LAIN (bukan diri sendiri)
+  const currentOccupied = components
+    .filter((c) => c.id !== item.id && c.slotId !== null)
+    .map((c) => c.slotId as string);
+
+  const slot = findNearestSlot(
+    d.x + item.width / 2,
+    d.y + item.height / 2,
+    item.type,
+    currentOccupied
+  );
+
+  if (!slot) {
+    // 🔽 Tidak ada slot kosong di dekat titik drop -> batalkan
+    // pemindahan, kembalikan ke posisi & ukuran SEMULA.
+    setComponents((prev) =>
+      prev.map((c) =>
+        c.id === item.id
+          ? {
+              ...c,
+              x: item.x,
+              y: item.y,
+              width: item.width,
+              height: item.height,
+              slotId: item.slotId,
+              isCorrect: item.isCorrect,
+            }
+          : c
+      )
+    );
+
+    return;
+  }
+
+  const isCorrect = slot.type === item.type;
+
+  setComponents((prev) =>
+    prev.map((c) =>
+      c.id === item.id
+        ? {
+            ...c,
+            slotId: slot.id,
+            x: slot.x,
+            y: slot.y,
+            width: slot.width,
+            height: slot.height,
+            isCorrect,
+          }
+        : c
+    )
+  );
+
+  toast.dismiss();
+
+  if (isCorrect) {
+    toast.success(`${item.name} berhasil dipasang`);
+  } else {
+    toast.error(`${item.name} dipasang pada tempat yang salah`);
+  }
+};
 
   return (
     <div className="flex-1 bg-gray-300 overflow-auto">
@@ -282,13 +289,13 @@ export default function Canvas({
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onDragLeave={() => setActiveSlotId(null)}
-        className="relative mx-auto my-10"
-        style={{
-          width: 900,
-          height: 650,
-          transform: `scale(${INITIAL_SCALE * zoom})`,
-          transformOrigin: "top center",
-        }}
+className="relative mx-auto mt-8 mb-0"
+style={{
+  width: 900,
+  height: 450,
+  transform: `translateX(140px) scale(${INITIAL_SCALE * zoom})`,
+  transformOrigin: "top center",
+}}
       >
         <Motherboard
           activeSlotId={activeSlotId}

@@ -7,10 +7,9 @@ import Toolbar from "../../components/Siswa/Toolbar";
 import Canvas from "../../components/Siswa/Canvas";
 import ComponentPanel from "../../components/Siswa/ComponentPanel";
 
-// Tipe slot yang tersedia di motherboard
 export interface Slot {
   id: string;
-  type: "cpu" | "ram" | "gpu" | "ssd" | "psu";
+  type: "cpu" | "ram" | "ssd" | "cooler" | "hdd" | "vga" | "psu" | "cmos_battery" | "sata_cable" | "sata_power_cable" | "optical_drive" | "cooling_fan" | "casing" | "monitor" | "speaker" | "mouse" | "keyboard";
   x: number;
   y: number;
   width: number;
@@ -26,17 +25,28 @@ export interface ComputerComponent {
   y: number;
   width: number;
   height: number;
-  slotId: string | null; // null = masih berada di panel/tray, belum dipasang
-  isCorrect?: boolean; // true/false setelah dipasang, undefined kalau belum dipasang
+  originalWidth: number;   // 🆕 ukuran asli (dipakai lagi saat dilepas ke panel)
+  originalHeight: number;  // 🆕
+  slotId: string | null;
+  isCorrect?: boolean;
 }
 
 const INITIAL_COMPONENTS: ComputerComponent[] = [
-  { id: 1, name: "Processor", image: "/images/processor.jpg", type: "cpu", x: 0, y: 0, width: 90, height: 90, slotId: null },
-  { id: 2, name: "RAM 1", image: "/images/RAM.jpg", type: "ram", x: 0, y: 0, width: 24, height: 160, slotId: null },
-  { id: 3, name: "RAM 2", image: "/images/RAM.jpg", type: "ram", x: 0, y: 0, width: 24, height: 160, slotId: null },
-  { id: 4, name: "GPU", image: "/images/gpu.png", type: "gpu", x: 0, y: 0, width: 170, height: 60, slotId: null },
-  { id: 5, name: "SSD", image: "/images/ssd.png", type: "ssd", x: 0, y: 0, width: 90, height: 50, slotId: null },
-  { id: 6, name: "Power Supply", image: "/images/psu.png", type: "psu", x: 0, y: 0, width: 90, height: 90, slotId: null },
+  // --- Sudah ada sebelumnya ---
+  { id: 1, name: "Processor", image: "/images/processor.jpeg", type: "cpu", x: 0, y: 0, width: 90, height: 90, originalWidth: 90, originalHeight: 90, slotId: null },
+  { id: 2, name: "RAM 1", image: "/images/RAM.jpg", type: "ram", x: 0, y: 0, width: 24, height: 160, originalWidth: 24, originalHeight: 160, slotId: null },
+  { id: 3, name: "RAM 2", image: "/images/RAM.jpg", type: "ram", x: 0, y: 0, width: 24, height: 160, originalWidth: 24, originalHeight: 160, slotId: null },
+  { id: 4, name: "SSD", image: "/images/ssd.jpeg", type: "ssd", x: 0, y: 0, width: 90, height: 50, originalWidth: 90, originalHeight: 50, slotId: null },
+  { id: 5, name: "Cooler", image: "/images/cooler.jpeg", type: "cooler", x: 0, y: 0, width: 100, height: 100, originalWidth: 100, originalHeight: 100, slotId: null },
+  { id: 6, name: "HDD", image: "/images/hdd.jpeg", type: "hdd", x: 0, y: 0, width: 100, height: 100, originalWidth: 100, originalHeight: 100, slotId: null },
+  { id: 7, name: "VGA", image: "/images/vga.jpeg", type: "vga", x: 0, y: 0, width: 170, height: 60, originalWidth: 170, originalHeight: 60, slotId: null },
+  { id: 8, name: "Power Supply", image: "/images/psu.jpeg", type: "psu", x: 0, y: 0, width: 90, height: 90, originalWidth: 90, originalHeight: 90, slotId: null },
+
+  { id: 9, name: "Baterai CMOS", image: "/images/cmos_battery.jpeg", type: "cmos_battery", x: 0, y: 0, width: 40, height: 40, originalWidth: 40, originalHeight: 40, slotId: null },
+  { id: 10, name: "Kabel SATA", image: "/images/sata_cable.jpeg", type: "sata_cable", x: 0, y: 0, width: 120, height: 30, originalWidth: 120, originalHeight: 30, slotId: null },
+  { id: 11, name: "Kabel Power SATA", image: "/images/sata_power_cable.jpeg", type: "sata_power_cable", x: 0, y: 0, width: 120, height: 30, originalWidth: 120, originalHeight: 30, slotId: null },
+  { id: 12, name: "Optical Drive (DVD)", image: "/images/optical_drive.jpeg", type: "optical_drive", x: 0, y: 0, width: 150, height: 40, originalWidth: 150, originalHeight: 40, slotId: null },
+  { id: 13, name: "Cooling Fan (Casing)", image: "/images/cooling_fan.jpeg", type: "cooling_fan", x: 0, y: 0, width: 90, height: 90, originalWidth: 90, originalHeight: 90, slotId: null },
 ];
 
 export default function SimulasiPage() {

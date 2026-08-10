@@ -13,9 +13,14 @@ export default function Motherboard({
 }: MotherboardProps) {
   return (
     <div className="relative">
-      <div className="w-[900px] h-[650px] rounded-xl border-8 border-gray-700 bg-green-700 shadow-2xl relative overflow-hidden">
+      <div className="relative w-[550px] aspect-square rounded-xl border-8 border-gray-700 shadow-2xl overflow-hidden bg-white">
+        <img
+          src="/images/motherboard.jpeg"
+          alt="Motherboard"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+          draggable={false}
+        />
 
-        {/* Slot dirender dari data SLOTS (Slot.tsx) */}
         {SLOTS.map((slot) => (
           <SlotBox
             key={slot.id}
@@ -25,20 +30,8 @@ export default function Motherboard({
           />
         ))}
 
-        {/* Chipset (dekorasi, bukan slot yang bisa diisi) */}
-        <div className="absolute left-[520px] top-[350px] w-[90px] h-[90px] bg-gray-500 rounded-lg" />
-
-        {/* SATA (dekorasi) */}
-        <div className="absolute right-[90px] bottom-[80px] flex gap-2">
-          <div className="w-6 h-6 bg-orange-500 rounded" />
-          <div className="w-6 h-6 bg-orange-500 rounded" />
-          <div className="w-6 h-6 bg-orange-500 rounded" />
-          <div className="w-6 h-6 bg-orange-500 rounded" />
-        </div>
-
-        {/* Label */}
-        <div className="absolute bottom-5 left-5 text-white text-xl font-bold">
-          ATX Motherboard
+        <div className="absolute bottom-3 left-3 text-white text-lg font-bold drop-shadow bg-black/40 px-2 py-1 rounded">
+          GIGABYTE GA-H61M-S2P
         </div>
       </div>
     </div>

@@ -1,14 +1,22 @@
 import { Slot } from "../../app/simulasi/page";
 
-// Koordinat slot dalam koordinat lokal motherboard (900 x 650).
-// Sesuaikan x/y/width/height ini agar pas dengan gambar/marker motherboard kamu.
+// Koordinat ini dihitung untuk kontainer motherboard 700 x 698 px
+// (skala dari gambar asli). Silakan sesuaikan sedikit kalau masih
+// kurang pas — paling gampang buka gambar di image editor, cek
+// posisi piksel tiap komponen, lalu kalikan skala = 700 / lebar_asli_gambar.
 export const SLOTS: Slot[] = [
-  { id: "cpu-slot", type: "cpu", x: 330, y: 180, width: 120, height: 120 },
-  { id: "ram-slot-1", type: "ram", x: 726, y: 100, width: 24, height: 208 },
-  { id: "ram-slot-2", type: "ram", x: 761, y: 100, width: 24, height: 208 },
-  { id: "gpu-slot", type: "gpu", x: 120, y: 496, width: 420, height: 24 },
-  { id: "ssd-slot", type: "ssd", x: 540, y: 450, width: 170, height: 20 },
-  { id: "psu-slot", type: "psu", x: 760, y: 60, width: 90, height: 90 },
+  // Socket CPU (area LGA di tengah board)
+  { id: "cpu-slot", type: "cpu", x: 351, y: 193, width: 198, height: 198 },
+
+  // 2 dari 4 slot DIMM DDR3 (baris atas & baris kedua)
+  { id: "ram-slot-1", type: "ram", x: 272, y: 99, width: 374, height: 30 },
+  { id: "ram-slot-2", type: "ram", x: 272, y: 145, width: 374, height: 30 },
+
+  // Slot SSD (area M.2 dekat chipset, sesuaikan lagi kalau perlu)
+  { id: "ssd-slot", type: "ssd", x: 555, y: 540, width: 90, height: 30 },
+
+  // Cooler dipasang menutupi area CPU (lebih besar dari cpu-slot)
+  { id: "cooler-slot", type: "cooler", x: 328, y: 170, width: 244, height: 244 },
 ];
 
 type SlotBoxProps = {
@@ -17,9 +25,6 @@ type SlotBoxProps = {
   isOccupied: boolean;
 };
 
-// Kotak putus-putus yang menandai area slot di motherboard.
-// isActive -> nyala kuning saat komponen sedang di-drag mendekati slot ini.
-// isOccupied -> redup karena sudah ada komponen terpasang.
 export function SlotBox({ slot, isActive, isOccupied }: SlotBoxProps) {
   return (
     <div
@@ -35,7 +40,7 @@ export function SlotBox({ slot, isActive, isOccupied }: SlotBoxProps) {
           ? "border-yellow-300 bg-yellow-300/25"
           : isOccupied
           ? "border-white/20"
-          : "border-white/50"
+          : "border-white/60"
       }`}
     />
   );

@@ -113,13 +113,7 @@ export default function Home() {
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div
-                className="
-                  bg-white
-                  rounded-xl
-                  shadow-xl
-                  w-full
-                  max-w-4xl
-                  overflow-hidden">
+                className="bg-white rounded-xl shadow-xl w-full max-w-4xl overflow-hidden">
                 {/* Header Modal */}
                 <div
                   className="flex justify-between items-center border-b px-6 py-3">

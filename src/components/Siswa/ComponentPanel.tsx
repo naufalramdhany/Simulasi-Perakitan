@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { ComputerComponent } from "../../app/simulasi/page";
+import { FiSearch } from "react-icons/fi";
 
 type Props = {
   components: ComputerComponent[];
@@ -12,8 +13,16 @@ type Props = {
 
 export default function ComponentPanel({ components }: Props) {
   const [isOpen, setIsOpen] = useState(true);
+  const [search, setSearch] = useState("");
 
-  const tray = components.filter((c) => c.slotId === null);
+  const tray = useMemo(() => {
+  return components.filter((c) => {
+    return (
+      c.slotId === null &&
+      c.name.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+}, [components, search]);
   const placed = components.filter((c) => c.slotId !== null);
 
   const handleDragStart = (
@@ -27,7 +36,7 @@ export default function ComponentPanel({ components }: Props) {
   return (
     <div
       className={`relative bg-white border-l transition-all duration-300 h-full ${
-        isOpen ? "w-56" : "w-10"
+        isOpen ? "w-70" : "w-5"
       }`}
     >
       {/* Tombol buka/tutup */}
@@ -46,25 +55,36 @@ export default function ComponentPanel({ components }: Props) {
         <div className="flex flex-col h-full">
 
           {/* Header */}
-          <div className="p-3 border-b">
-            <h2 className="font-bold text-base text-black">
-              Komponen
-            </h2>
-            <p className="text-xs text-gray-500">
-              Seret komponen ke slot yang sesuai.
-            </p>
-          </div>
+<div className="p-3 border-b">
+  <h2 className="font-bold text-base text-black mb-3">
+    Komponen
+  </h2>
+
+  <div className="relative">
+<input
+  type="text"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  placeholder="Search..."
+  className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700"
+/>
+    <FiSearch
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+      size={18}
+    />
+  </div>
+</div>
 
           {/* Daftar Komponen */}
           <div className="flex-1 overflow-y-auto p-3">
 
-            {tray.length === 0 && (
-              <p className="text-xs text-center text-gray-400 italic">
-                Semua komponen telah dipasang.
-              </p>
-            )}
+{tray.length === 0 && (
+  <p className="text-xs text-center text-gray-400 mt-4 text-slate-700">
+    Komponen tidak ditemukan.
+  </p>
+)}
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
 
               {tray.map((item) => (
                 <div
