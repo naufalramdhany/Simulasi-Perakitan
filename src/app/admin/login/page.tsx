@@ -1,59 +1,82 @@
 "use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   FaEnvelope,
   FaLock,
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { supabase } from "../../../lib/supabase";
+import toast from "react-hot-toast";
 export default function AdminLogin() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (email === "admin@gmail.com" && password === "123456") {
-      window.location.href = "/admin";
+
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  setIsLoading(true);
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  console.log("LOGIN DATA:", data);
+  console.log("LOGIN ERROR:", error);
+
+  if (error) {
+    if (error.message === "Invalid login credentials") {
+      toast.error("Email atau password salah.");
+    } else if (error.message === "Email not confirmed") {
+      toast.error("Email belum dikonfirmasi.");
     } else {
-      setError("Email atau password salah.");
-      setIsLoading(false);
+      toast.error(error.message);
     }
-  };
+
+    setIsLoading(false);
+    return;
+  }
+
+  toast.success("Login berhasil!");
+
+  router.push("/admin/dashboard");
+  router.refresh();
+};
   return (
     <div className="min-h-screen bg-[#3B82F6] flex items-center justify-center px-4">
+
+
       {/* Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="bg-[#1E3A5F] py-5 px-6 text-center">
           <div className="flex justify-center mb-3">
             <img
-              src="https://api.dicebear.com/9.x/adventurer/svg?seed=Admin"
+              src="/images/logo.webp"
               alt="Admin"
-              className="w-16 h-16 rounded-full border-2 border-white shadow-lg"
+              className="w-16 h-16 "
             />
           </div>
-<h2 className="text-lg font-bold text-white">
-  E Learning Perakitan Komputer
-</h2>
-<h2 className="text-sm font-medium text-white mt-1">
-  Admin Panel
-</h2>
+          <h2 className="text-lg font-bold text-white">
+            Simulasi Perakitan Komputer
+          </h2>
+          <h2 className="text-sm font-medium text-white mt-1">
+            Untuk Kelas X TKJ SMKN 1 Prigen
+          </h2>
         </div>
         {/* Form */}
         <div className="p-6">
           <h2 className="text-base font-bold text-center text-gray-800 mb-6">
             Masuk Ke Dashboard
           </h2>
-          {error && (
-            <div className="bg-red-100 border border-red-300 text-red-600 text-sm rounded-lg p-3 mb-4 text-center">
-              {error}
-            </div>
-          )}
+
           <form onSubmit={handleLogin} className="space-y-4">
             {/* Email */}
             <div>

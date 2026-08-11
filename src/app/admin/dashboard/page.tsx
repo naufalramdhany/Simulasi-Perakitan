@@ -7,7 +7,6 @@ export default function DashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [totalKomponen, setTotalKomponen] = useState(0);
   const [totalSoal, setTotalSoal] = useState(0);
-  const userEmail = "admin@gmail.com";
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -35,7 +34,7 @@ export default function DashboardPage() {
       />
       <main className="md:ml-64 flex flex-col min-h-screen">
         <Header
-          userEmail={userEmail}
+  
           setIsSidebarOpen={setIsSidebarOpen}
         />
         <div className="flex-1 p-6">

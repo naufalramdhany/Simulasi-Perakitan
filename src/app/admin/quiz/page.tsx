@@ -9,6 +9,8 @@ import {
 import Header from "../../../components/Admin/Header";
 import Sidebar from "../../../components/Admin/Sidebar";
 import { supabase } from "../../../lib/supabase";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 type Soal = {
   id: number;
   pertanyaan: string;
@@ -19,7 +21,6 @@ const letters = ["A", "B", "C", "D"];
 export default function SoalPage() {
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
-  const userEmail = "admin@gmail.com";
   const [loading, setLoading] =
     useState(true);
   const [saving, setSaving] =
@@ -36,35 +37,39 @@ export default function SoalPage() {
   };
   const [formData, setFormData] =
     useState(emptyForm);
-      const getSoal = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("soal")
-        .select("*")
-        .order("id", {
-          ascending: true,
-        });
-      if (error) throw error;
-      const hasil: Soal[] = data.map((item) => ({
-        id: item.id,
-        pertanyaan: item.pertanyaan,
-        opsi: [
-          item.opsi_a,
-          item.opsi_b,
-          item.opsi_c,
-          item.opsi_d,
-        ],
-        jawabanBenar: item.jawaban,
-      }));
-      setSoal(hasil);
-    } catch (err) {
-      console.error(err);
-      alert("Gagal mengambil data.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const getSoal = async () => {
+  try {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("soal")
+      .select("*")
+      .order("id", {
+        ascending: true,
+      });
+
+    if (error) throw error;
+
+    const hasil: Soal[] = data.map((item) => ({
+      id: item.id,
+      pertanyaan: item.pertanyaan,
+      opsi: [
+        item.opsi_a,
+        item.opsi_b,
+        item.opsi_c,
+        item.opsi_d,
+      ],
+      jawabanBenar: item.jawaban,
+    }));
+
+    setSoal(hasil);
+  } catch (err) {
+    console.error(err);
+    toast.error("Gagal mengambil data soal.");
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     getSoal();
   }, []);
@@ -106,74 +111,102 @@ export default function SoalPage() {
       jawabanBenar: index,
     });
   };
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
-    try {
-      setSaving(true);
-            if (
-        formData.pertanyaan.trim() === "" ||
-        formData.opsi.some(
-          (item) => item.trim() === ""
-        )
-      ) {
-        alert("Semua field wajib diisi.");
-        return;
-      }
-      if (formData.id === 0) {
-        const { error } = await supabase
-          .from("soal")
-          .insert({
-            pertanyaan: formData.pertanyaan,
-            opsi_a: formData.opsi[0],
-            opsi_b: formData.opsi[1],
-            opsi_c: formData.opsi[2],
-            opsi_d: formData.opsi[3],
-            jawaban: formData.jawabanBenar,
-          });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from("soal")
-          .update({
-            pertanyaan: formData.pertanyaan,
-            opsi_a: formData.opsi[0],
-            opsi_b: formData.opsi[1],
-            opsi_c: formData.opsi[2],
-            opsi_d: formData.opsi[3],
-            jawaban: formData.jawabanBenar,
-          })
-          .eq("id", formData.id);
-        if (error) throw error;
-      }
-      await getSoal();
-      setFormData(emptyForm);
-      closeModal();
-          } catch (err) {
-      console.error(err);
-      alert("Gagal menyimpan data.");
-    } finally {
-      setSaving(false);
-    }
-  };
-  const handleDelete = async (id: number) => {
-    if (!confirm("Hapus soal ini?")) return;
-    try {
-      setLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (
+    formData.pertanyaan.trim() === "" ||
+    formData.opsi.some((item) => item.trim() === "")
+  ) {
+    toast.error("Semua field wajib diisi.");
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    if (formData.id === 0) {
       const { error } = await supabase
         .from("soal")
-        .delete()
-        .eq("id", id);
+        .insert({
+          pertanyaan: formData.pertanyaan,
+          opsi_a: formData.opsi[0],
+          opsi_b: formData.opsi[1],
+          opsi_c: formData.opsi[2],
+          opsi_d: formData.opsi[3],
+          jawaban: formData.jawabanBenar,
+        });
+
       if (error) throw error;
-      await getSoal();
-    } catch (err) {
-      console.error(err);
-      alert("Gagal menghapus data.");
-    } finally {
-      setLoading(false);
+
+      toast.success("Soal berhasil ditambahkan.");
+    } else {
+      const { error } = await supabase
+        .from("soal")
+        .update({
+          pertanyaan: formData.pertanyaan,
+          opsi_a: formData.opsi[0],
+          opsi_b: formData.opsi[1],
+          opsi_c: formData.opsi[2],
+          opsi_d: formData.opsi[3],
+          jawaban: formData.jawabanBenar,
+        })
+        .eq("id", formData.id);
+
+      if (error) throw error;
+
+      toast.success("Soal berhasil diperbarui.");
     }
-  };
+
+    await getSoal();
+
+    setFormData(emptyForm);
+    closeModal();
+  } catch (err) {
+    console.error(err);
+    toast.error("Gagal menyimpan data soal.");
+  } finally {
+    setSaving(false);
+  }
+};
+const handleDelete = async (id: number) => {
+  const result = await Swal.fire({
+    title: "Hapus Soal?",
+    text: "Soal yang dihapus tidak dapat dikembalikan.",
+    icon: "warning",
+    width: "350px",
+    padding: "1.2em",
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Ya, Hapus",
+    cancelButtonText: "Batal",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const { error } = await supabase
+      .from("soal")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    await getSoal();
+
+    toast.success("Soal berhasil dihapus.");
+  } catch (err) {
+    console.error(err);
+    toast.error("Gagal menghapus soal.");
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-gray-100">
       <Sidebar
@@ -182,7 +215,6 @@ export default function SoalPage() {
       />
       <main className="md:ml-64 flex flex-col min-h-screen">
         <Header
-          userEmail={userEmail}
           setIsSidebarOpen={setIsSidebarOpen}
         />
         <div className="p-4 md:p-8 text-black text-sm">
@@ -220,7 +252,7 @@ export default function SoalPage() {
                   </tr>
                 </thead>
                 <tbody>
-                                    {loading ? (
+                  {loading ? (
                     <tr>
                       <td
                         colSpan={5}

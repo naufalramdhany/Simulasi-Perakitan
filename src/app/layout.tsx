@@ -29,7 +29,7 @@ export default function RootLayout({
   position="top-right"
   reverseOrder={false}
   toastOptions={{
-    duration: 2500,
+    duration: 4000,
     style: {
       borderRadius: "10px",
       color: "#fff",

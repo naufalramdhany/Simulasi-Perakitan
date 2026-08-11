@@ -1,14 +1,17 @@
+
 "use client";
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaChartLine,
   FaBook,
   FaClipboardCheck,
   FaTimes,
+  FaSignOutAlt,
 } from "react-icons/fa";
+import { supabase } from "../../lib/supabase";
 
 type SidebarProps = {
   isSidebarOpen: boolean;
@@ -20,10 +23,24 @@ export default function Sidebar({
   setIsSidebarOpen,
 }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  // ================= LOGOUT =================
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Logout gagal:", error.message);
+      return;
+    }
+
+    setIsSidebarOpen(false);
+    router.push("/admin/login");
+  };
 
   return (
     <>
-      {/* Overlay Mobile */}
+      {/* ================= OVERLAY MOBILE ================= */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
@@ -40,9 +57,12 @@ export default function Sidebar({
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73] flex justify-between items-center">
           <div>
-            <Link href="/admin/dashboard" className="text-2xl font-bold">
-              E Learning
-            </Link>
+            <p
+              
+              className="text-base font-bold"
+            >
+              Perakitan Komputer
+            </p>
 
             <p className="text-xs text-blue-200 mt-1">
               Admin Panel
@@ -101,15 +121,28 @@ export default function Sidebar({
             Kelola Quiz
           </Link>
         </nav>
+
+        {/* Logout Mobile */}
+        <div className="p-4 border-t border-[#2C4F73]">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-gray-300 hover:bg-red-500/20 hover:text-red-300 transition"
+          >
+            <FaSignOutAlt />
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-64 bg-[#1E3A5F] text-white flex-col z-40">
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73]">
-          <Link href="/admin/dashboard" className="text-2xl font-bold">
-            E Learning
-          </Link>
+          <p
+            className="text-lg font-bold"
+          >
+            Perakitan Komputer
+          </p>
 
           <p className="text-xs text-blue-200 mt-1">
             Admin Panel
@@ -157,6 +190,17 @@ export default function Sidebar({
             Kelola Quiz
           </Link>
         </nav>
+
+        {/* Logout Desktop */}
+        <div className="p-4 border-t border-[#2C4F73]">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-gray-300 hover:bg-red-500/20 hover:text-red-300 transition"
+          >
+            <FaSignOutAlt />
+            Logout
+          </button>
+        </div>
       </aside>
     </>
   );

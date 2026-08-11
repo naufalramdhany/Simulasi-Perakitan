@@ -9,6 +9,8 @@ import {
 import Header from "../../../components/Admin/Header";
 import Sidebar from "../../../components/Admin/Sidebar";
 import { supabase } from "../../../lib/supabase";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 type Komponen = {
   id: number;
   nama: string;
@@ -19,7 +21,6 @@ type Komponen = {
 export default function MateriPage() {
   const [isSidebarOpen, setIsSidebarOpen] =
     useState(false);
-  const userEmail = "admin@gmail.com";
   const [komponen, setKomponen] =
     useState<Komponen[]>([]);
   const [loading, setLoading] =
@@ -125,9 +126,12 @@ export default function MateriPage() {
     e.preventDefault();
     setSaving(true);
     let gambar = formData.gambar;
-    if (imageFile) {
-      gambar = await uploadImage();
-    }
+
+if (imageFile) {
+  gambar = await uploadImage();
+} else if (!gambar) {
+  gambar = "/images/dummy.webp";
+}
     if (formData.id === 0) {
             const { error } = await supabase
         .from("komponen")
@@ -138,12 +142,12 @@ export default function MateriPage() {
             deskripsi: formData.deskripsi,
           },
         ]);
-      if (error) {
-        console.log(error.message);
-        alert("Gagal menambahkan data.");
-      } else {
-        alert("Data berhasil ditambahkan.");
-      }
+if (error) {
+  console.log(error.message);
+  toast.error("Gagal menambahkan data.");
+} else {
+  toast.success("Data berhasil ditambahkan.");
+}
     } else {
       const { error } = await supabase
         .from("komponen")
@@ -153,37 +157,50 @@ export default function MateriPage() {
           deskripsi: formData.deskripsi,
         })
         .eq("id", formData.id);
-      if (error) {
-        console.log(error.message);
-        alert("Gagal mengubah data.");
-      } else {
-        alert("Data berhasil diperbarui.");
-      }
+if (error) {
+  console.log(error.message);
+  toast.error("Gagal mengubah data.");
+} else {
+  toast.success("Data berhasil diperbarui.");
+}
     }
     await fetchKomponen();
     setSaving(false);
     closeModal();
   };
-    const handleDelete = async (
-    id: number
-  ) => {
-    if (!confirm("Hapus komponen ini?")) {
-      return;
-    }
-    setDeletingId(id);
-    const { error } = await supabase
-      .from("komponen")
-      .delete()
-      .eq("id", id);
-    if (error) {
-      console.log(error.message);
-      alert("Gagal menghapus data.");
-    } else {
-      alert("Data berhasil dihapus.");
-      await fetchKomponen();
-    }
-    setDeletingId(null);
-  };
+const handleDelete = async (id: number) => {
+  const result = await Swal.fire({
+    title: "Hapus Komponen?",
+    text: "Data yang dihapus tidak dapat dikembalikan.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Ya, Hapus",
+    cancelButtonText: "Batal",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  setDeletingId(id);
+
+  const { error } = await supabase
+    .from("komponen")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.log(error.message);
+    toast.error("Gagal menghapus data.");
+  } else {
+    toast.success("Data berhasil dihapus.");
+    await fetchKomponen();
+  }
+
+  setDeletingId(null);
+};
   return (
     <div className="min-h-screen bg-gray-100">
       <Sidebar
@@ -192,7 +209,6 @@ export default function MateriPage() {
       />
       <main className="md:ml-64 flex flex-col min-h-screen">
         <Header
-          userEmail={userEmail}
           setIsSidebarOpen={setIsSidebarOpen}
         />
                 <div className="p-4 md:p-8 text-black text-sm">

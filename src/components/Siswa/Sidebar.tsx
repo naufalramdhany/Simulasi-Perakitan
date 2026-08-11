@@ -40,12 +40,12 @@ export default function Sidebar({
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73] flex justify-between items-center">
           <div>
-            <Link href="/" className="text-2xl font-bold">
-              E Learning
-            </Link>
+            <p  className="text-base font-bold">
+              Perakitan Komputer
+            </p>
 
             <p className="text-xs text-blue-200 mt-1">
-              Perakitan Komputer
+              Kelas X TKJ SMKN 1 Prigen
             </p>
           </div>
 
@@ -107,12 +107,12 @@ export default function Sidebar({
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-64 bg-[#1E3A5F] text-white flex-col z-40">
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73]">
-          <Link href="/" className="text-2xl font-bold">
-            E Learning
-          </Link>
+          <p className="text-lg font-bold">
+            Perakitan Komputer
+          </p>
 
           <p className="text-xs text-blue-200 mt-1">
-            Perakitan Komputer
+            Kelas X TKJ SMKN 1 Prigen
           </p>
         </div>
 

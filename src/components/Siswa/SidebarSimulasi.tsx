@@ -40,12 +40,12 @@ export default function Sidebar({
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73] flex justify-between items-center">
           <div>
-            <Link href="/" className="text-2xl font-bold">
-              E Learning
-            </Link>
+            <p  className="text-base font-bold">
+              Perakitan Komputer
+            </p>
 
             <p className="text-xs text-blue-200 mt-1">
-              Perakitan Komputer
+              Kelas X TKJ SMKN 1 Prigen
             </p>
           </div>
 
@@ -103,7 +103,6 @@ export default function Sidebar({
         </nav>
       </aside>
 
-      {/* ================= DESKTOP SIDEBAR ================= */}
 {/* ================= DESKTOP SIDEBAR ================= */}
 <aside className="hidden md:flex fixed top-0 left-0 h-screen w-20 hover:w-64 bg-[#1E3A5F] text-white flex-col overflow-hidden transition-all duration-300 ease-in-out group z-40">
 
@@ -121,9 +120,8 @@ export default function Sidebar({
     duration-300
   "
 >
-  <Link
-    href="/"
-    className="text-2xl font-bold whitespace-nowrap flex items-center"
+  <p
+    className="text-lg font-bold whitespace-nowrap flex items-center"
   >
     {/* Sebelum Hover */}
     <span
@@ -136,7 +134,7 @@ export default function Sidebar({
         duration-300
       "
     >
-      E
+      PKR
     </span>
 
     {/* Setelah Hover */}
@@ -152,9 +150,9 @@ export default function Sidebar({
         whitespace-nowrap
       "
     >
-      E Learning
+      Perakitan Komputer
     </span>
-  </Link>
+  </p>
 
   <div className="relative h-4 mt-1 w-full">
     {/* Sebelum Hover */}
@@ -174,7 +172,7 @@ export default function Sidebar({
         group-hover:opacity-0
       "
     >
-      Perakitan
+      X TKJ
     </p>
 
     {/* Setelah Hover */}
@@ -191,7 +189,7 @@ export default function Sidebar({
         group-hover:opacity-100
       "
     >
-      Perakitan Komputer
+      Kelas X TKJ SMKN 1 Prigen
     </p>
   </div>
 </div>

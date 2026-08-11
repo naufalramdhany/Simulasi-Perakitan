@@ -1,19 +1,44 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaBars } from "react-icons/fa";
+import { supabase } from "../../lib/supabase";
 
 type HeaderProps = {
-  userEmail: string;
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Header({
-  userEmail,
   setIsSidebarOpen,
 }: HeaderProps) {
   const pathname = usePathname();
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        setUserEmail(user.email || "");
+      }
+    };
+
+    getUser();
+
+    // Update jika status login berubah
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email || "");
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   let title = "Dashboard";
 
@@ -27,6 +52,7 @@ export default function Header({
 
   return (
     <header className="bg-white shadow-sm h-16 flex items-center px-4 md:px-8 justify-between shrink-0">
+      
       {/* Left */}
       <div className="flex items-center gap-3">
         <button
@@ -44,10 +70,15 @@ export default function Header({
 
       {/* Right */}
       <div className="flex items-center gap-2 md:gap-4">
+        
+        {/* Avatar */}
         <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm md:text-base">
-          {userEmail ? userEmail[0].toUpperCase() : "A"}
+          {userEmail
+            ? userEmail[0].toUpperCase()
+            : "A"}
         </div>
 
+        {/* User Info */}
         <div className="hidden sm:block text-left">
           <p className="text-xs md:text-sm font-bold text-gray-800">
             Admin
@@ -57,6 +88,7 @@ export default function Header({
             {userEmail || "Superadmin"}
           </p>
         </div>
+
       </div>
     </header>
   );
