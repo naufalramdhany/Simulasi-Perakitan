@@ -140,6 +140,7 @@ useEffect(() => {
             components={components}
             setComponents={setComponents}
             saveHistory={saveHistory}
+            isSimulationStarted={isSimulationStarted}
           />
 
           <ComponentPanel

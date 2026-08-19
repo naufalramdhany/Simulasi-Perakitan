@@ -47,12 +47,14 @@ type SlotBoxProps = {
   slot: Slot;
   isActive: boolean;
   isOccupied: boolean;
+  isSimulationStarted?: boolean;
 };
 
 export function SlotBox({
   slot,
   isActive,
   isOccupied,
+  isSimulationStarted = false,
 }: SlotBoxProps) {
   const isRamSlot =
     slot.id === "ram-slot-1" ||
@@ -117,13 +119,53 @@ ${
       )}
 
       {/* COOLER */}
-      {isCoolerSlot && isOccupied && (
-        <img
-          src="/images/cooler.png"
-          alt="Cooler"
-          className="w-full h-full object-fill scale-120"
-        />
-      )}
+{/* COOLER */}
+{isCoolerSlot && isOccupied && (
+  <div className="relative w-full h-full ">
+    
+    {/* FRAME + BAUT */}
+    <img
+      src="/images/cooler-frame.png"
+      alt="Cooler Frame"
+      className="
+        absolute
+        inset-0
+        w-full
+        h-full
+        object-fill
+        pointer-events-none
+
+      "
+    />
+
+    {/* KIPAS */}
+    <img
+      src="/images/cooler-fan.png"
+      alt="Cooler Fan"
+      className={`
+        absolute
+        left-1/2
+        top-1/2
+        -translate-x-1/2
+        -translate-y-1/2
+
+        w-[90%]
+        h-[90%]
+
+        object-fill
+        origin-center
+        pointer-events-none
+
+        ${
+          isSimulationStarted
+            ? "animate-[spin_0.6s_linear_infinite]"
+            : ""
+        }
+      `}
+    />
+
+  </div>
+)}
 
       {/* CMOS */}
       {isCmosSlot && isOccupied && (

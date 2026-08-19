@@ -13,6 +13,7 @@ type MotherboardProps = {
   occupiedSlotIds?: string[];
   motherboardRef?: React.RefObject<HTMLDivElement | null>;
   zoom?: number;
+  isSimulationStarted?: boolean;
 };
 
 type Point = {
@@ -25,6 +26,7 @@ export default function Motherboard({
   occupiedSlotIds = [],
   motherboardRef,
   zoom = 1,
+  isSimulationStarted = false,
 }: MotherboardProps) {
   const containerRef =
     useRef<HTMLDivElement>(null);
@@ -62,6 +64,29 @@ export default function Motherboard({
 
   const [psuPort, setPsuPort] =
     useState<Point | null>(null);
+
+  /* =========================
+     STATE BOOT MONITOR
+  ========================= */
+
+  const [bootStage, setBootStage] =
+    useState<"off" | "booting" | "on">(
+      "off"
+    );
+
+  useEffect(() => {
+    if (isSimulationStarted) {
+      setBootStage("booting");
+
+      const t = setTimeout(() => {
+        setBootStage("on");
+      }, 2000);
+
+      return () => clearTimeout(t);
+    } else {
+      setBootStage("off");
+    }
+  }, [isSimulationStarted]);
 
   /* =========================
      HITUNG POSISI SEMUA PORT
@@ -568,18 +593,80 @@ if (
             z-[60]
           "
         >
-          <img
-            src="/images/monitor.png"
-            alt="Monitor"
-            className="
-              w-[250px]
-              h-auto
-              object-contain
-              select-none
-              pointer-events-none
-            "
-            draggable={false}
-          />
+<div
+  className={`
+    relative
+    ${
+      isSimulationStarted
+        ? "drop-shadow-[0_0_25px_rgba(59,130,246,0.8)]"
+        : ""
+    }
+  `}
+>
+  <img
+    src="/images/monitor.png"
+    alt="Monitor"
+    className="
+      w-[250px]
+      h-auto
+      object-contain
+      select-none
+      pointer-events-none
+    "
+    draggable={false}
+  />
+
+  {isSimulationStarted && (
+    <div
+      className="
+        absolute
+        left-[50%]
+        top-[37.5%]
+        -translate-x-1/2
+        -translate-y-1/2
+        w-[240px]
+        h-[150px]
+        rounded
+        bg-black
+        overflow-hidden
+        flex
+        items-center
+        justify-center
+        pointer-events-none
+      "
+    >
+      {bootStage === "booting" && (
+        <span
+          className="
+            text-green-400
+            text-[10px]
+            font-mono
+            animate-pulse
+          "
+        >
+          Starting System...
+        </span>
+      )}
+
+      {bootStage === "on" && (
+        <div
+          className="
+            w-full
+            h-full
+            bg-blue-500/80
+            flex
+            items-center
+            justify-center
+          "
+        >
+          <span className="text-white text-[10px] font-mono">
+            Desktop
+          </span>
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
           {/* PORT VGA MONITOR */}
 
@@ -659,6 +746,9 @@ if (
             isOccupied={occupiedSlotIds.includes(
               slot.id
             )}
+            isSimulationStarted={
+              isSimulationStarted
+            }
           />
         ))}
 

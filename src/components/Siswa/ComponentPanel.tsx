@@ -33,7 +33,7 @@ export default function ComponentPanel({ components }: Props) {
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute -left-4 top-50 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center z-50"
+        className="absolute -left-4 top-50 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center z-5"
       >
         {isOpen ? (
           <FaChevronRight size={12} />

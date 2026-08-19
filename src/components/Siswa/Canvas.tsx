@@ -17,6 +17,8 @@ type CanvasProps = {
   >;
 
   saveHistory: () => void;
+
+  isSimulationStarted?: boolean;
 };
 
 const SNAP_THRESHOLD = 10;
@@ -156,6 +158,7 @@ export default function Canvas({
   components,
   setComponents,
   saveHistory,
+  isSimulationStarted = false,
 }: CanvasProps) {
   const boardRef =
     useRef<HTMLDivElement>(null);
@@ -492,6 +495,7 @@ export default function Canvas({
             occupiedSlotIds
           }
           zoom={zoom}
+          isSimulationStarted={isSimulationStarted}
         />
 
         {placed.map(
