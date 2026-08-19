@@ -31,7 +31,6 @@ export default function Sidebar({
         />
       )}
 
-      {/* ================= MOBILE SIDEBAR ================= */}
       <aside
         className={`fixed top-0 left-0 bottom-0 w-64 bg-[#1E3A5F] text-white z-50 md:hidden flex flex-col transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -103,7 +102,6 @@ export default function Sidebar({
         </nav>
       </aside>
 
-      {/* ================= DESKTOP SIDEBAR ================= */}
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-64 bg-[#1E3A5F] text-white flex-col z-40">
         {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73]">

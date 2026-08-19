@@ -45,8 +45,8 @@ export default function RootLayout({
         color: "#fff",
       },
       iconTheme: {
-        primary: "#fff",      // warna icon
-        secondary: "#22c55e", // warna lingkaran
+        primary: "#fff",      
+        secondary: "#22c55e", 
       },
     },
 
