@@ -20,7 +20,6 @@ export default function QuizPage() {
   const [finished, setFinished] = useState(false);
   const [showReview, setShowReview] = useState(false);
 
-  // PINDAHKAN KE SINI
   const [cooldown, setCooldown] = useState(0);
 
   useEffect(() => {
@@ -274,64 +273,101 @@ const handleNext = () => {
           <Header
             setIsSidebarOpen={setIsSidebarOpen}
           />
-          <div className="flex-1 flex items-center justify-center p-5">
-            <div className="w-full max-w-sm bg-white rounded-xl shadow-md border border-slate-200 p-6">
-              <div className="flex justify-center">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-3xl">
-                  🎉
-                </div>
-              </div>
-              <h1 className="text-2xl font-bold text-center text-slate-800 mt-4">
-                Quiz Selesai
-              </h1>
-                            <p className="text-center text-slate-500 text-sm mt-2">
-                Selamat! Kamu telah menyelesaikan quiz.
-              </p>
-              <div className="mt-6 text-center">
-                <p className="text-sm text-slate-500">
-                  Nilai Kamu
-                </p>
-                <h2 className="text-5xl font-bold text-blue-600 mt-2">
-                  {score}
-                </h2>
-                <p className="text-xs text-slate-400 mt-2">
-                  dari 100 poin
-                </p>
-              </div>
-              <button
-                onClick={() => setShowReview(true)}
-                className="w-full mt-6 border border-blue-600 text-blue-600 hover:bg-blue-50 transition py-2.5 rounded-lg text-sm font-semibold"
-              >
-                Lihat Review Jawaban
-              </button>
-<button
-  disabled={cooldown > 0}
-onClick={() => {
-  if (cooldown > 0) return;
+<div className="flex-1 flex items-center justify-center p-5">
+  <div
+    className={`w-full max-w-sm rounded-xl shadow-md p-6 border ${
+      score < 70
+        ? "bg-red-50 border-red-200"
+        : "bg-green-50 border-green-200"
+    }`}
+  >
+    <div className="flex justify-center">
+      <div
+        className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl ${
+          score < 70
+            ? "bg-red-100"
+            : "bg-green-100"
+        }`}
+      >
+        {score < 70 ? "😢" : "🎉"}
+      </div>
+    </div>
 
-  localStorage.removeItem("quizCooldown");
-  localStorage.removeItem("quizFinished");
+    <h1 className="text-2xl font-bold text-center text-slate-800 mt-4">
+      Quiz Selesai
+    </h1>
 
-  setCurrentIndex(0);
-  setAnswers([]);
-  setSelected(null);
-  setFinished(false);
-  setShowReview(false);
+    <p
+      className={`text-center text-sm mt-2 ${
+        score < 70
+          ? "text-red-600"
+          : "text-green-600"
+      }`}
+    >
+      {score < 70
+        ? "Terus berlatih untuk meningkatkan hasilmu."
+        : "Hasil quizmu sangat baik. Pertahankan hasilmu."}
+    </p>
 
-  setQuizData((prev) =>
-    [...prev].sort(() => Math.random() - 0.5)
-  );
-}}
-  className="w-full mt-3 bg-blue-600 hover:bg-blue-700 transition text-white py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {cooldown > 0
-    ? `Ulangi dalam ${Math.floor(cooldown / 60)}:${String(
-        cooldown % 60
-      ).padStart(2, "0")}`
-    : "Ulangi Quiz"}
-</button>
-            </div>
-          </div>
+    <div className="mt-6 text-center">
+      <p className="text-sm text-slate-500">
+        Nilai Akhir
+      </p>
+
+      <h2
+        className={`text-5xl font-bold mt-2 ${
+          score < 70
+            ? "text-red-600"
+            : "text-green-600"
+        }`}
+      >
+        {score}
+      </h2>
+
+      <p className="text-xs text-slate-400 mt-2">
+        dari 100 poin
+      </p>
+    </div>
+
+    <button
+      onClick={() => setShowReview(true)}
+      className={`w-full mt-6 transition py-2.5 rounded-lg text-sm font-semibold border ${
+        score < 70
+          ? "border-red-500 text-red-600 hover:bg-red-100"
+          : "border-green-500 text-green-600 hover:bg-green-100"
+      }`}
+    >
+      Periksa Jawaban
+    </button>
+
+    <button
+      disabled={cooldown > 0}
+      onClick={() => {
+        if (cooldown > 0) return;
+
+        localStorage.removeItem("quizCooldown");
+        localStorage.removeItem("quizFinished");
+
+        setCurrentIndex(0);
+        setAnswers([]);
+        setSelected(null);
+        setFinished(false);
+        setShowReview(false);
+
+        setQuizData((prev) =>
+          [...prev].sort(() => Math.random() - 0.5)
+        );
+      }}
+      className="w-full mt-3 bg-blue-600 hover:bg-blue-700 transition text-white py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {cooldown > 0
+        ? `Coba lagi dalam ${Math.floor(cooldown / 60)}:${String(
+            cooldown % 60
+          ).padStart(2, "0")}`
+        : "Kerjakan Quiz Lagi"}
+    </button>
+  </div>
+</div>
         </main>
       </div>
     );

@@ -134,7 +134,7 @@ export default function Sidebar({
         duration-300
       "
     >
-      PKR
+      X TKJ
     </span>
 
     {/* Setelah Hover */}
@@ -172,7 +172,7 @@ export default function Sidebar({
         group-hover:opacity-0
       "
     >
-      X TKJ
+      Perakitan
     </p>
 
     {/* Setelah Hover */}

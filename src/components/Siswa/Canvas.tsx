@@ -5,31 +5,56 @@ import { Rnd } from "react-rnd";
 import Motherboard from "./Motherboard";
 import { SLOTS } from "./Slot";
 import toast from "react-hot-toast";
-import { ComputerComponent } from "../../app/simulasi/page";
+import { ComputerComponent } from "./Types";
 
 type CanvasProps = {
   zoom: number;
+
   components: ComputerComponent[];
-  setComponents: React.Dispatch<React.SetStateAction<ComputerComponent[]>>;
+
+  setComponents: React.Dispatch<
+    React.SetStateAction<ComputerComponent[]>
+  >;
+
   saveHistory: () => void;
 };
 
-const SNAP_THRESHOLD = 60;
+const SNAP_THRESHOLD = 10;
 
-// Skala awal motherboard
 const INITIAL_SCALE = 0.8;
 
-// Jarak dari sebuah titik (px, py) ke persegi slot.
-// Kalau titik berada DI DALAM slot, hasilnya 0.
+/* =========================================
+   JARAK TITIK KE RECTANGLE
+========================================= */
+
 function distanceToRect(
   px: number,
   py: number,
-  rect: { x: number; y: number; width: number; height: number }
+  rect: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
 ) {
-  const dx = Math.max(rect.x - px, 0, px - (rect.x + rect.width));
-  const dy = Math.max(rect.y - py, 0, py - (rect.y + rect.height));
+  const dx = Math.max(
+    rect.x - px,
+    0,
+    px - (rect.x + rect.width)
+  );
+
+  const dy = Math.max(
+    rect.y - py,
+    0,
+    py - (rect.y + rect.height)
+  );
+
   return Math.hypot(dx, dy);
 }
+
+/* =========================================
+   CARI SLOT SESUAI TIPE
+========================================= */
 
 function findNearestSlot(
   x: number,
@@ -37,20 +62,41 @@ function findNearestSlot(
   type: string,
   occupiedSlotIds: string[]
 ) {
-  let best: (typeof SLOTS)[number] | null = null;
+  let best:
+    | (typeof SLOTS)[number]
+    | null = null;
+
   let bestDist = Infinity;
 
   for (const slot of SLOTS) {
-    if (occupiedSlotIds.includes(slot.id)) continue;
+    if (
+      occupiedSlotIds.includes(
+        slot.id
+      )
+    ) {
+      continue;
+    }
 
-    const dist = distanceToRect(x, y, slot);
+    if (slot.type !== type) {
+      continue;
+    }
 
-    if (dist > SNAP_THRESHOLD) continue;
+    const dist =
+      distanceToRect(
+        x,
+        y,
+        slot
+      );
 
-    const score = slot.type === type ? dist : dist + 1000;
+    if (
+      dist >
+      SNAP_THRESHOLD
+    ) {
+      continue;
+    }
 
-    if (score < bestDist) {
-      bestDist = score;
+    if (dist < bestDist) {
+      bestDist = dist;
       best = slot;
     }
   }
@@ -58,22 +104,43 @@ function findNearestSlot(
   return best;
 }
 
-// Untuk highlight saat drag: cari slot terdekat TANPA memedulikan
-// tipe (biar semua slot kosong yang cukup dekat ikut menyala,
-// sesuai jenis kotak yang lebih dekat duluan).
+/* =========================================
+   CARI SLOT UNTUK HIGHLIGHT
+========================================= */
+
 function findNearestSlotAnyType(
   x: number,
   y: number,
   occupiedSlotIds: string[]
 ) {
-  let best: (typeof SLOTS)[number] | null = null;
+  let best:
+    | (typeof SLOTS)[number]
+    | null = null;
+
   let bestDist = Infinity;
 
   for (const slot of SLOTS) {
-    if (occupiedSlotIds.includes(slot.id)) continue;
+    if (
+      occupiedSlotIds.includes(
+        slot.id
+      )
+    ) {
+      continue;
+    }
 
-    const dist = distanceToRect(x, y, slot);
-    if (dist > SNAP_THRESHOLD) continue;
+    const dist =
+      distanceToRect(
+        x,
+        y,
+        slot
+      );
+
+    if (
+      dist >
+      SNAP_THRESHOLD
+    ) {
+      continue;
+    }
 
     if (dist < bestDist) {
       bestDist = dist;
@@ -90,253 +157,424 @@ export default function Canvas({
   setComponents,
   saveHistory,
 }: CanvasProps) {
-  const boardRef = useRef<HTMLDivElement>(null);
-  const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
+  const boardRef =
+    useRef<HTMLDivElement>(null);
 
-  const placed = components.filter((c) => c.slotId !== null);
-  const occupiedSlotIds = placed.map((c) => c.slotId as string);
+  const motherboardRef =
+    useRef<HTMLDivElement>(null);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  const [
+    activeSlotId,
+    setActiveSlotId,
+  ] = useState<string | null>(
+    null
+  );
 
-    const board = boardRef.current;
-    if (!board) return;
+  /* =========================================
+     KOMPONEN TERPASANG
+  ========================================= */
 
-    const rect = board.getBoundingClientRect();
-    const scale = INITIAL_SCALE * zoom;
-
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
-
-    const nearest = findNearestSlotAnyType(x, y, occupiedSlotIds);
-    setActiveSlotId(nearest ? nearest.id : null);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setActiveSlotId(null);
-
-    const idStr = e.dataTransfer.getData("componentId");
-    if (!idStr) return;
-
-    const id = Number(idStr);
-
-    const board = boardRef.current;
-    if (!board) return;
-
-    const rect = board.getBoundingClientRect();
-    const scale = INITIAL_SCALE * zoom;
-
-    const dropX = (e.clientX - rect.left) / scale;
-    const dropY = (e.clientY - rect.top) / scale;
-
-    const item = components.find((c) => c.id === id);
-    if (!item) return;
-
-    const slot = findNearestSlot(
-      dropX,
-      dropY,
-      item.type,
-      occupiedSlotIds
+  const placed =
+    components.filter(
+      (c) => c.slotId !== null
     );
 
-    if (!slot) return;
+  const occupiedSlotIds =
+    placed
+      .map((c) => c.slotId)
+      .filter(
+        (
+          id
+        ): id is string =>
+          id !== null
+      );
 
-    const isCorrect = slot.type === item.type;
+  /* =========================================
+     OFFSET MOTHERBOARD
+  ========================================= */
+
+  const getMotherboardOffset =
+    () => {
+      const board =
+        boardRef.current;
+
+      const motherboard =
+        motherboardRef.current;
+
+      if (
+        !board ||
+        !motherboard
+      ) {
+        return {
+          x: 0,
+          y: 0,
+        };
+      }
+
+      const boardRect =
+        board.getBoundingClientRect();
+
+      const motherboardRect =
+        motherboard.getBoundingClientRect();
+
+      const scale =
+        INITIAL_SCALE *
+        zoom;
+
+      return {
+        x:
+          (
+            motherboardRect.left -
+            boardRect.left
+          ) / scale,
+
+        y:
+          (
+            motherboardRect.top -
+            boardRect.top
+          ) / scale,
+      };
+    };
+
+  /* =========================================
+     DRAG OVER
+  ========================================= */
+
+  const handleDragOver = (
+    e: React.DragEvent<HTMLDivElement>
+  ) => {
+    e.preventDefault();
+
+    const motherboard =
+      motherboardRef.current;
+
+    if (!motherboard) {
+      return;
+    }
+
+    const rect =
+      motherboard.getBoundingClientRect();
+
+    const scale =
+      INITIAL_SCALE *
+      zoom;
+
+    const x =
+      (
+        e.clientX -
+        rect.left
+      ) / scale;
+
+    const y =
+      (
+        e.clientY -
+        rect.top
+      ) / scale;
+
+    const nearest =
+      findNearestSlotAnyType(
+        x,
+        y,
+        occupiedSlotIds
+      );
+
+    setActiveSlotId(
+      nearest
+        ? nearest.id
+        : null
+    );
+  };
+
+  /* =========================================
+     DROP
+  ========================================= */
+
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>
+  ) => {
+    e.preventDefault();
+
+    setActiveSlotId(null);
+
+    const idStr =
+      e.dataTransfer.getData(
+        "componentId"
+      );
+
+    if (!idStr) {
+      return;
+    }
+
+    const id =
+      Number(idStr);
+
+    const motherboard =
+      motherboardRef.current;
+
+    if (!motherboard) {
+      return;
+    }
+
+    const rect =
+      motherboard.getBoundingClientRect();
+
+    const scale =
+      INITIAL_SCALE *
+      zoom;
+
+    const dropX =
+      (
+        e.clientX -
+        rect.left
+      ) / scale;
+
+    const dropY =
+      (
+        e.clientY -
+        rect.top
+      ) / scale;
+
+    const item =
+      components.find(
+        (c) => c.id === id
+      );
+
+    if (!item) {
+      return;
+    }
+
+    const slot =
+      findNearestSlot(
+        dropX,
+        dropY,
+        item.type,
+        occupiedSlotIds
+      );
+
+    if (!slot) {
+      toast.dismiss();
+
+      toast.error(
+        `Slot tidak sesuai untuk ${item.name}`
+      );
+
+      return;
+    }
 
     saveHistory();
 
-setComponents((prev) =>
-  prev.map((c) =>
-    c.id === id
-      ? {
-          ...c,
-          slotId: slot.id,
-          // 🔽 ukuran & posisi mengikuti slot persis, bukan ukuran asli komponen
-          x: slot.x,
-          y: slot.y,
-          width: slot.width,
-          height: slot.height,
-          isCorrect,
-        }
-      : c
-  )
-);
+    setComponents(
+      (prev) =>
+        prev.map((c) => {
+          if (c.id !== id) {
+            return c;
+          }
+
+          /*
+           * KABEL:
+           *
+           * VGA
+           * ATX 24
+           * ATX 4
+           *
+           * Tidak perlu dirender sebagai Rnd.
+           * Motherboard.tsx yang menggambar
+           * kabel SVG-nya.
+           */
+
+          if (
+            item.type ===
+              "cable_vga" ||
+            item.type ===
+              "cable_atx-24" ||
+            item.type ===
+              "cable_atx-4"
+          ) {
+            return {
+              ...c,
+
+              slotId:
+                slot.id,
+
+              x: 0,
+              y: 0,
+
+              width: 0,
+              height: 0,
+
+              isCorrect:
+                true,
+            };
+          }
+
+          return {
+            ...c,
+
+            slotId:
+              slot.id,
+
+            x: slot.x,
+            y: slot.y,
+
+            width:
+              slot.width,
+
+            height:
+              slot.height,
+
+            isCorrect:
+              true,
+          };
+        })
+    );
 
     toast.dismiss();
 
-    if (isCorrect) {
-      toast.success(`${item.name} berhasil dipasang`);
-    } else {
-      toast.error(`${item.name} dipasang pada tempat yang salah`);
-    }
+    toast.success(
+      `${item.name} berhasil dipasang`
+    );
   };
 
-  const handleReposition = (
-    item: ComputerComponent,
-    d: { x: number; y: number }
-  ) => {
-    const currentOccupied = components
-      .filter((c) => c.id !== item.id && c.slotId !== null)
-      .map((c) => c.slotId as string);
-
-    const nearest = findNearestSlotAnyType(
-      d.x + item.width / 2,
-      d.y + item.height / 2,
-      currentOccupied
-    );
-
-    setActiveSlotId(nearest ? nearest.id : null);
-  };
-
-const handleRepositionStop = (
-  item: ComputerComponent,
-  d: { x: number; y: number }
-) => {
-  setActiveSlotId(null);
-
-  const outOfBounds =
-    d.x < -50 ||
-    d.y < -50 ||
-    d.x > 900 ||
-    d.y > 650;
-
-  if (outOfBounds) {
-    setComponents((prev) =>
-      prev.map((c) =>
-        c.id === item.id
-          ? {
-              ...c,
-              slotId: null,
-              isCorrect: undefined,
-              x: 0,
-              y: 0,
-              width: c.originalWidth,
-              height: c.originalHeight,
-            }
-          : c
-      )
-    );
-
-    return;
-  }
-
-  // Slot yang sudah ditempati komponen LAIN (bukan diri sendiri)
-  const currentOccupied = components
-    .filter((c) => c.id !== item.id && c.slotId !== null)
-    .map((c) => c.slotId as string);
-
-  const slot = findNearestSlot(
-    d.x + item.width / 2,
-    d.y + item.height / 2,
-    item.type,
-    currentOccupied
-  );
-
-  if (!slot) {
-    // 🔽 Tidak ada slot kosong di dekat titik drop -> batalkan
-    // pemindahan, kembalikan ke posisi & ukuran SEMULA.
-    setComponents((prev) =>
-      prev.map((c) =>
-        c.id === item.id
-          ? {
-              ...c,
-              x: item.x,
-              y: item.y,
-              width: item.width,
-              height: item.height,
-              slotId: item.slotId,
-              isCorrect: item.isCorrect,
-            }
-          : c
-      )
-    );
-
-    return;
-  }
-
-  const isCorrect = slot.type === item.type;
-
-  setComponents((prev) =>
-    prev.map((c) =>
-      c.id === item.id
-        ? {
-            ...c,
-            slotId: slot.id,
-            x: slot.x,
-            y: slot.y,
-            width: slot.width,
-            height: slot.height,
-            isCorrect,
-          }
-        : c
-    )
-  );
-
-  toast.dismiss();
-
-  if (isCorrect) {
-    toast.success(`${item.name} berhasil dipasang`);
-  } else {
-    toast.error(`${item.name} dipasang pada tempat yang salah`);
-  }
-};
+  const motherboardOffset =
+    getMotherboardOffset();
 
   return (
-    <div className="flex-1 bg-gray-300 overflow-auto">
+    <div
+      className="
+        flex-1
+        bg-gray-300
+        overflow-auto
+      "
+    >
       <div
         ref={boardRef}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onDragLeave={() => setActiveSlotId(null)}
-className="relative mx-auto mt-8 mb-0"
-style={{
-  width: 900,
-  height: 450,
-  transform: `translateX(140px) scale(${INITIAL_SCALE * zoom})`,
-  transformOrigin: "top center",
-}}
+        onDragOver={
+          handleDragOver
+        }
+        onDrop={
+          handleDrop
+        }
+        onDragLeave={() =>
+          setActiveSlotId(
+            null
+          )
+        }
+        className="
+          relative
+          mx-auto
+          mt-8
+          mb-0
+        "
+        style={{
+          width: 900,
+          height: 400,
+
+          transform: `
+            translateX(0px)
+            translateY(20px)
+            scale(
+              ${INITIAL_SCALE * zoom}
+            )
+          `,
+
+          transformOrigin:
+            "top center",
+        }}
       >
         <Motherboard
-          activeSlotId={activeSlotId}
-          occupiedSlotIds={occupiedSlotIds}
+          motherboardRef={
+            motherboardRef
+          }
+          activeSlotId={
+            activeSlotId
+          }
+          occupiedSlotIds={
+            occupiedSlotIds
+          }
+          zoom={zoom}
         />
 
-        {placed.map((item) => (
-          <Rnd
-            key={item.id}
-            size={{
-              width: item.width,
-              height: item.height,
-            }}
-            position={{
-              x: item.x,
-              y: item.y,
-            }}
-            enableResizing={false}
-            bounds="window"
-            onDragStart={() => {
-              saveHistory();
-            }}
-            onDrag={(e, d) => handleReposition(item, d)}
-            onDragStop={(e, d) => handleRepositionStop(item, d)}
-          >
-            <div
-              className="w-full h-full rounded cursor-grab active:cursor-grabbing transition"
-              title={
-                item.isCorrect === false
-                  ? "Slot salah — coba pindahkan ke slot yang sesuai"
-                  : item.name
-              }
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-contain select-none pointer-events-none"
-              />
-            </div>
-          </Rnd>
-        ))}
+        {placed.map(
+          (item) => {
+
+            if (
+              item.type ===
+                "cable_vga" ||
+              item.type ===
+                "cable_atx-24" ||
+              item.type ===
+                "cable_atx-4"
+            ) {
+              return null;
+            }
+
+            return (
+              <Rnd
+                key={item.id}
+                size={{
+                  width:
+                    item.width,
+
+                  height:
+                    item.height,
+                }}
+                position={{
+                  x:
+                    motherboardOffset.x +
+                    item.x,
+
+                  y:
+                    motherboardOffset.y +
+                    item.y,
+                }}
+                enableResizing={
+                  false
+                }
+                disableDragging={
+                  true
+                }
+              >
+                <div
+                  className="
+                    w-full
+                    h-full
+                    rounded
+                  "
+                  title={
+                    item.name
+                  }
+                >
+                  {item.type !==
+                    "ram" &&
+                    item.type !==
+                      "cpu" &&
+                    item.type !==
+                      "cooler" &&
+                    item.type !==
+                      "cmos_battery" &&
+                    item.type !==
+                      "vga" && (
+                      <img
+                        src={
+                          item.image
+                        }
+                        alt={
+                          item.name
+                        }
+                        className="
+                          w-full
+                          h-full
+                          object-fill
+                          select-none
+                          pointer-events-none
+                        "
+                      />
+                    )}
+                </div>
+              </Rnd>
+            );
+          }
+        )}
       </div>
     </div>
   );
