@@ -207,7 +207,6 @@ export default function Motherboard({
           <img src="/images/psu.png" alt="Power Supply" className="w-[250px] h-auto object-contain select-none pointer-events-none" draggable={false} />
           <div ref={psuPortRef} className="absolute right-[-2px] top-[60px] -translate-y-1/2 w-[25px] h-[25px] bg-transparent pointer-events-none z-[110]" />
         </div>
-
         <span className="mt-0 text-sm font-semibold text-gray-700">Power Supply</span>
 
         <div className="relative mt-6 z-[60]">
