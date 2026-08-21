@@ -8,7 +8,7 @@ export const SLOTS: Slot[] = [
   { id: "cmos-slot", type: "cmos_battery", x: 264, y: 300, width: 45, height: 48 },
   { id: "vga-slot", type: "vga", x: 115, y: 350, width: 152, height: 8 },
   { id: "atx-slot-24", type: "cable_atx-24", x: 341, y: 24, width: 97, height: 23 },
-  { id: "atx-slot-4", type: "cable_atx-4", x: 108, y: 21, width: 31, height: 23 },
+  { id: "atx-slot-4", type: "cable_atx-4", x: 117, y: 21, width: 22, height: 23 },
   { id: "vga-cable-slot", type: "cable_vga", x: 0, y: 28, width: 17, height: 72 },
 ];
 

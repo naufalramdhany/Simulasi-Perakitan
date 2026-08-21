@@ -234,7 +234,7 @@ export default function Motherboard({
       </div>
 
       <div ref={motherboardRef} className="relative w-[500px] aspect-square rounded-xl border-8 border-gray-700 shadow-2xl overflow-hidden bg-white z-10">
-        <img src="/images/motherboard.jpeg" alt="Motherboard" className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" draggable={false} />
+        <img src="/images/motherboard1.jpeg" alt="Motherboard" className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" draggable={false} />
         {SLOTS.map((slot) => (
           <SlotBox key={slot.id} slot={slot} isActive={activeSlotId === slot.id} isOccupied={occupiedSlotIds.includes(slot.id)} isSimulationStarted={isSimulationStarted} />
         ))}
