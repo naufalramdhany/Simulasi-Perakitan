@@ -114,7 +114,6 @@ export default function Home() {
               className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div
                 className="bg-white rounded-xl shadow-xl w-full max-w-4xl overflow-hidden">
-                {/* Header Modal */}
                 <div
                   className="flex justify-between items-center border-b px-6 py-3">
                   <h2 className="text-base font-semibold text-gray-800">
@@ -126,17 +125,14 @@ export default function Home() {
                     ×
                   </button>
                 </div>
-                {/* Body Modal */}
                 <div className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
-                    {/* Gambar */}
                     <div className="md:w-1/3 flex justify-center items-start">
                       <img
                         src={selectedKomponen.gambar}
                         alt={selectedKomponen.nama}
                         className="w-60 h-60 object-cover rounded-lg border shadow"/>
                     </div>
-                    {/* Informasi */}
                     <div className="md:w-2/3">
                       <h3 className="text-base font-semibold text-gray-800 mb-2">
                         {selectedKomponen.nama}

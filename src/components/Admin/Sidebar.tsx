@@ -25,7 +25,6 @@ export default function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
 
-  // ================= LOGOUT =================
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
@@ -40,7 +39,6 @@ export default function Sidebar({
 
   return (
     <>
-      {/* ================= OVERLAY MOBILE ================= */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
@@ -48,13 +46,11 @@ export default function Sidebar({
         />
       )}
 
-      {/* ================= MOBILE SIDEBAR ================= */}
       <aside
         className={`fixed top-0 left-0 bottom-0 w-64 bg-[#1E3A5F] text-white z-50 md:hidden flex flex-col transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73] flex justify-between items-center">
           <div>
             <p
@@ -77,9 +73,7 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Dashboard */}
           <Link
             href="/admin/dashboard"
             onClick={() => setIsSidebarOpen(false)}
@@ -93,7 +87,6 @@ export default function Sidebar({
             Dashboard
           </Link>
 
-          {/* Materi */}
           <Link
             href="/admin/materi"
             onClick={() => setIsSidebarOpen(false)}
@@ -107,7 +100,6 @@ export default function Sidebar({
             Kelola Materi
           </Link>
 
-          {/* Quiz */}
           <Link
             href="/admin/quiz"
             onClick={() => setIsSidebarOpen(false)}
@@ -122,7 +114,6 @@ export default function Sidebar({
           </Link>
         </nav>
 
-        {/* Logout Mobile */}
         <div className="p-4 border-t border-[#2C4F73]">
           <button
             onClick={handleLogout}
@@ -134,9 +125,7 @@ export default function Sidebar({
         </div>
       </aside>
 
-      {/* ================= DESKTOP SIDEBAR ================= */}
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-64 bg-[#1E3A5F] text-white flex-col z-40">
-        {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73]">
           <p
             className="text-lg font-bold"
@@ -149,9 +138,7 @@ export default function Sidebar({
           </p>
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Dashboard */}
           <Link
             href="/admin/dashboard"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${
@@ -164,7 +151,6 @@ export default function Sidebar({
             Dashboard
           </Link>
 
-          {/* Materi */}
           <Link
             href="/admin/materi"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${
@@ -177,7 +163,6 @@ export default function Sidebar({
             Kelola Materi
           </Link>
 
-          {/* Quiz */}
           <Link
             href="/admin/quiz"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${
@@ -191,7 +176,6 @@ export default function Sidebar({
           </Link>
         </nav>
 
-        {/* Logout Desktop */}
         <div className="p-4 border-t border-[#2C4F73]">
           <button
             onClick={handleLogout}

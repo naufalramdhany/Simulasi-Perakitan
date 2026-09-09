@@ -7,7 +7,8 @@ export type ComponentType =
   | "cmos_battery"
   | "cable_atx-24"
   | "cable_atx-4"
-  | "cable_vga";
+  | "cable_vga"
+  | "cable_sata";
 
 export interface Slot {
   id: string;

@@ -1,15 +1,16 @@
 import { Slot } from "./Types";
 
 export const SLOTS: Slot[] = [
-  { id: "cpu-slot", type: "cpu", x: 265, y: 177, width: 80, height: 63 },
-  { id: "ram-slot-1", type: "ram", x: 195, y: 104, width: 229, height: 14 },
-  { id: "ram-slot-2", type: "ram", x: 195, y: 71, width: 229, height: 14 },
-  { id: "cooler-slot", type: "cooler", x: 220, y: 123, width: 167, height: 174 },
-  { id: "cmos-slot", type: "cmos_battery", x: 264, y: 300, width: 45, height: 48 },
-  { id: "vga-slot", type: "vga", x: 115, y: 350, width: 152, height: 8 },
-  { id: "atx-slot-24", type: "cable_atx-24", x: 341, y: 24, width: 97, height: 23 },
-  { id: "atx-slot-4", type: "cable_atx-4", x: 117, y: 21, width: 22, height: 23 },
-  { id: "vga-cable-slot", type: "cable_vga", x: 0, y: 28, width: 17, height: 72 },
+  { id: "cpu-slot", type: "cpu", x: 157, y: 114, width: 54, height: 63 },
+  { id: "ram-slot-1", type: "ram", x: 260.5, y: 49, width: 4.5, height: 178 },
+  { id: "ram-slot-2", type: "ram", x: 290.5, y: 49, width: 4.5, height: 178 },
+  { id: "cooler-slot", type: "cooler", x: 117, y: 78, width: 133, height: 131 },
+  { id: "cmos-slot", type: "cmos_battery", x: 153, y: 272, width: 41, height: 41 },
+  { id: "vga-slot", type: "vga", x: 77, y: 241, width: 120, height:7 },
+  { id: "atx-slot-24", type: "cable_atx-24", x: 333, y: 118, width: 15, height: 73 },
+  { id: "atx-slot-4", type: "cable_atx-4", x: 73, y: 53, width: 21, height: 21 },
+  { id: "vga-cable-slot", type: "cable_vga", x: -10, y: 106, width: 16, height: 45.5 },
+  { id: "sata-cable-slot", type: "cable_sata", x: 296, y: 260, width: 26.5, height: 12 },
 ];
 
 type SlotBoxProps = {
@@ -27,6 +28,7 @@ export function SlotBox({ slot, isActive, isOccupied, isSimulationStarted = fals
   const isVgaSlot = slot.id === "vga-slot";
   const isVgaCableSlot = slot.id === "vga-cable-slot";
   const isAtxSlot = slot.id === "atx-slot-24" || slot.id === "atx-slot-4";
+  const isSataCableSlot = slot.id === "sata-cable-slot";
 
   return (
     <div
@@ -46,6 +48,8 @@ export function SlotBox({ slot, isActive, isOccupied, isSimulationStarted = fals
             : isVgaCableSlot
             ? "bg-[#2A48B8] border-none"
             : isAtxSlot
+            ? "bg-black border-none"
+            : isSataCableSlot
             ? "bg-black border-none"
             : "border-none bg-transparent"
           : isActive

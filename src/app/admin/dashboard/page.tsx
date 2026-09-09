@@ -39,7 +39,6 @@ export default function DashboardPage() {
         />
         <div className="flex-1 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {/* Total Komponen */}
             <div className="bg-white rounded-xl shadow p-6">
               <h3 className="text-sm text-gray-500">
                 Total Komponen
@@ -48,7 +47,6 @@ export default function DashboardPage() {
                 {totalKomponen}
               </p>
             </div>
-            {/* Total Soal */}
             <div className="bg-white rounded-xl shadow p-6">
               <h3 className="text-sm text-gray-500">
                 Total Soal

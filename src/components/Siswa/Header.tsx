@@ -25,7 +25,6 @@ export default function Header({
 
   return (
     <header className="bg-white shadow-sm h-16 flex items-center px-4 md:px-8 justify-between shrink-0">
-      {/* Left */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => setIsSidebarOpen(true)}

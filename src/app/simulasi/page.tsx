@@ -7,6 +7,7 @@ import Header from "../../components/Siswa/Header";
 import Toolbar from "../../components/Siswa/Toolbar";
 import Canvas from "../../components/Siswa/Canvas";
 import ComponentPanel from "../../components/Siswa/ComponentPanel";
+import { DragProvider } from "../../components/Siswa/DragContext";
 import { ComputerComponent } from "../../components/Siswa/Types";
 
 const INITIAL_COMPONENTS: ComputerComponent[] = [
@@ -19,6 +20,7 @@ const INITIAL_COMPONENTS: ComputerComponent[] = [
   { id: 7, name: "Kabel ATX 24-Pin", image: "/images/kabel-atx.png", type: "cable_atx-24", x: 0, y: 0, width: 80, height: 80, slotId: null },
   { id: 8, name: "Kabel ATX 4-Pin", image: "/images/kabel-atx-4pin.png", type: "cable_atx-4", x: 0, y: 0, width: 80, height: 80, slotId: null },
   { id: 9, name: "Kabel VGA", image: "/images/kabel-vga.png", type: "cable_vga", x: 0, y: 0, width: 80, height: 80, slotId: null },
+  { id: 10, name: "Kabel SATA", image: "/images/satadata.png", type: "cable_sata", x: 0, y: 0, width: 80, height: 80, slotId: null },
 ];
 
 export default function SimulasiPage() {
@@ -73,39 +75,41 @@ export default function SimulasiPage() {
   }, [isAssemblyComplete]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-      <main className="md:ml-20 flex flex-col min-h-screen">
-        <div className="lg:hidden">
-          <Header setIsSidebarOpen={setIsSidebarOpen} />
-        </div>
-        <Toolbar
-          undo={undo}
-          redo={redo}
-          reset={reset}
-          zoom={zoom}
-          setZoom={setZoom}
-          canUndo={history.length > 0 && !isSimulationStarted}
-          canRedo={redoHistory.length > 0 && !isSimulationStarted}
-          isAssemblyComplete={isAssemblyComplete}
-          isSimulationStarted={isSimulationStarted}
-          setIsSimulationStarted={setIsSimulationStarted}
-        />
-        <div className="flex flex-1 overflow-hidden">
-          <Canvas
+    <DragProvider>
+      <div className="min-h-screen bg-gray-100">
+        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+        <main className="md:ml-20 flex flex-col min-h-screen">
+          <div className="lg:hidden">
+            <Header setIsSidebarOpen={setIsSidebarOpen} />
+          </div>
+          <Toolbar
+            undo={undo}
+            redo={redo}
+            reset={reset}
             zoom={zoom}
-            components={components}
-            setComponents={setComponents}
-            saveHistory={saveHistory}
+            setZoom={setZoom}
+            canUndo={history.length > 0 && !isSimulationStarted}
+            canRedo={redoHistory.length > 0 && !isSimulationStarted}
+            isAssemblyComplete={isAssemblyComplete}
             isSimulationStarted={isSimulationStarted}
+            setIsSimulationStarted={setIsSimulationStarted}
           />
-          <ComponentPanel
-            components={components}
-            setComponents={setComponents}
-            saveHistory={saveHistory}
-          />
-        </div>
-      </main>
-    </div>
+          <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+            <Canvas
+              zoom={zoom}
+              components={components}
+              setComponents={setComponents}
+              saveHistory={saveHistory}
+              isSimulationStarted={isSimulationStarted}
+            />
+            <ComponentPanel
+              components={components}
+              setComponents={setComponents}
+              saveHistory={saveHistory}
+            />
+          </div>
+        </main>
+      </div>
+    </DragProvider>
   );
 }

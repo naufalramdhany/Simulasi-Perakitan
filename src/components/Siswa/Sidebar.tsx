@@ -23,7 +23,6 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Overlay Mobile */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
@@ -56,9 +55,7 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Materi */}
           <Link
             href="/"
             onClick={() => setIsSidebarOpen(false)}
@@ -72,7 +69,6 @@ export default function Sidebar({
             Materi
           </Link>
 
-          {/* Simulasi */}
           <Link
             href="/simulasi"
             onClick={() => setIsSidebarOpen(false)}
@@ -86,7 +82,6 @@ export default function Sidebar({
             Simulasi
           </Link>
 
-          {/* Quiz */}
           <Link
             href="/quiz"
             onClick={() => setIsSidebarOpen(false)}
@@ -103,7 +98,6 @@ export default function Sidebar({
       </aside>
 
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-64 bg-[#1E3A5F] text-white flex-col z-40">
-        {/* Logo */}
         <div className="p-6 border-b border-[#2C4F73]">
           <p className="text-lg font-bold">
             Perakitan Komputer
@@ -114,9 +108,7 @@ export default function Sidebar({
           </p>
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 p-4 space-y-2">
-          {/* Materi */}
           <Link
             href="/"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${
@@ -129,7 +121,6 @@ export default function Sidebar({
             Materi
           </Link>
 
-          {/* Simulasi */}
           <Link
             href="/simulasi"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${
@@ -142,7 +133,6 @@ export default function Sidebar({
             Simulasi
           </Link>
 
-          {/* Quiz */}
           <Link
             href="/quiz"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition ${

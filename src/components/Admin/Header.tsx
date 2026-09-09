@@ -28,7 +28,6 @@ export default function Header({
 
     getUser();
 
-    // Update jika status login berubah
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -53,7 +52,6 @@ export default function Header({
   return (
     <header className="bg-white shadow-sm h-16 flex items-center px-4 md:px-8 justify-between shrink-0">
       
-      {/* Left */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -68,17 +66,14 @@ export default function Header({
         </h2>
       </div>
 
-      {/* Right */}
       <div className="flex items-center gap-2 md:gap-4">
         
-        {/* Avatar */}
         <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm md:text-base">
           {userEmail
             ? userEmail[0].toUpperCase()
             : "A"}
         </div>
 
-        {/* User Info */}
         <div className="hidden sm:block text-left">
           <p className="text-xs md:text-sm font-bold text-gray-800">
             Admin
