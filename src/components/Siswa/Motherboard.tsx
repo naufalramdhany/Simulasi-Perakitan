@@ -251,7 +251,7 @@ export default function Motherboard({ activeSlotId = null, occupiedSlotIds = [],
           <div className="relative">
             <img src="/images/monitor.png" alt="Monitor" className="w-[300px] h-auto object-contain select-none pointer-events-none" draggable={false} />
             {isSimulationStarted && (
-              <div className="absolute left-[50%] top-[37.5%] -translate-x-1/2 -translate-y-1/2 w-[240px] h-[150px] rounded bg-black overflow-hidden flex items-center justify-center pointer-events-none">
+              <div className="absolute right-[3.5px] top-[7px] w-[179px] h-[112px] rounded bg-black overflow-hidden flex items-center justify-center pointer-events-none">
                 {bootStage === "booting" && <span className="text-green-400 text-[10px] font-mono animate-pulse">Starting System...</span>}
                 {bootStage === "on" && (
                   <div className="w-full h-full bg-blue-500/80 flex items-center justify-center">

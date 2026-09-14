@@ -40,7 +40,7 @@ export default function ComponentPanel({ components }: Props) {
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="hidden lg:flex absolute -left-4 top-50 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-5"
+        className="hidden lg:flex absolute -left-4 top-50 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-10"
       >
         {isOpen ? (
           <FaChevronRight size={12} />
@@ -51,7 +51,7 @@ export default function ComponentPanel({ components }: Props) {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex lg:hidden absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-50"
+        className="flex lg:hidden absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-10"
       >
         {isOpen ? (
           <FaChevronDown size={12} />
