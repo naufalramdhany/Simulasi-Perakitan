@@ -75,7 +75,7 @@ export default function ComponentPanel({ components }: Props) {
               </p>
             )}
 
-            <div className="flex lg:grid lg:grid-cols-3 ">
+            <div className="flex gap-1 lg:grid lg:grid-cols-3 lg:gap-0">
               {tray.map((item) => (
                 <div
                   key={item.id}
